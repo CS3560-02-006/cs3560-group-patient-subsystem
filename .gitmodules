@@ -1,6 +1,8 @@
 [submodule "frontend"]
 	path = frontend
 	url = https://github.com/CS3560-02-006/cs3560-patient-subsystem-frontend.git
+	branch = main
 [submodule "backend"]
 	path = backend
 	url = https://github.com/CS3560-02-006/cs3560-patient-subsystem-backend.git
+	branch = main

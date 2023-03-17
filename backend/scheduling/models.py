@@ -31,6 +31,12 @@ class Patient(Person):
     insuranceProvider = models.TextField()
     policyNumber = models.TextField()
 
+class User(models.Model):
+    userID = models.IntegerField(primary_key=True)
+    email = models.TextField()
+    password = models.TextField()
+    userType = models.TextField()
+
 # Model for appointment class. Contains all attributes
 class Appoinment(models.Model):
     appointmentID = models.IntegerField(primary_key=True)

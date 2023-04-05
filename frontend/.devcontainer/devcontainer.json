@@ -5,7 +5,7 @@
 	"dockerComposeFile": ["../../docker-compose.yml"],
 	"service": "frontend",
 	"shutdownAction": "none",
-	"workspaceFolder": "/src",
+	"workspaceFolder": "/app",
 	"features": {
 		"ghcr.io/devcontainers/features/node": {}
 	},

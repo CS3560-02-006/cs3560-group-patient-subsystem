@@ -38,7 +38,7 @@ class User(models.Model):
     userType = models.TextField()
 
 # Model for appointment class. Contains all attributes
-class Appoinment(models.Model):
+class Appointment(models.Model):
     appointmentID = models.IntegerField(primary_key=True)
     doctorID = models.ForeignKey()
     patientID = models.ForeignKey()

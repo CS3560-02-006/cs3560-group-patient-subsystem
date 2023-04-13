@@ -1,4 +1,4 @@
-import React from 'react'
+import {Link} from 'react-router-dom'
 
 //Display main menu of options for either clerk or patient
 const Home = () => {
@@ -13,7 +13,11 @@ const Home = () => {
 
   }
   return (
-    <div>Home</div>
+    <div>
+      <h1>Home</h1>
+      <Link to='/createPatient'>CreatePatient</Link><br></br>
+      <Link to='/createAppointment'>CreateAppointment</Link>
+    </div>
   )
 }
 

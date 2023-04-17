@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CreateAccout = () => {
+const CreateAccount = () => {
   return (
-    <div>CreateAccout</div>
+    <div>CreateAccount</div>
   )
 }
 
-export default CreateAccout
+export default CreateAccount

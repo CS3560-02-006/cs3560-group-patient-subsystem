@@ -1,24 +1,20 @@
-import {useRef, useState, useEffect } from 'react'
-import {getDay} from 'date-fns'
-import DatePicker from 'react-datepicker'
-import "react-datepicker/dist/react-datepicker.css"
-
+import React, { useState, useEffect } from 'react'
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
-    const [date, setDate] = useState(null)
-    const [doctor, setDoctor] = useState("")
-    const descRef = useRef(null)
+    const [date, setDate] = useState<Date | null>(null);
+    const [doctor, setDoctor] = useState<string>("")
+    const [description, setDescription] = useState<string>("");
 
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log(JSON.stringify({
+        console.log({
             date : date,
-            description: descRef,
+            description: description,
             doctor: doctor,
             status: "unconfirmed"
             // patientID: <-- Depends on user identification
-        }))
+        });
         // let response = await fetch(`http://127.0.0.1:8000/appointment/`, {
         //     method: "POST",
         //     headers: {
@@ -48,32 +44,29 @@ const CreateAppointment = () => {
     //Resets Date If Doctor is Changed
     useEffect(()=>{
         setDate(null)
-
     }, [doctor])
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <fieldset>
-                    <select value={doctor} onChange={(e)=>setDoctor(e.target.value)}>
+                    <select value={doctor} onChange={(e: React.ChangeEvent<HTMLSelectElement>)=>setDoctor(e.target.value)}>
                         <option></option>
                         <option value="Doc1">Doc1</option>
                     </select>
                 </fieldset>
                 <fieldset>
                     <label>Appointment Time </label>
-                    <DatePicker 
-                        selected={date}
-                        onChange={(date) => setDate(date)}
-                        showTimeSelect
-                        filterDate={dayFilter}
-                        filterTime={timeFilter}
-                        dateFormat="MMMM d, yyyy h:mm aa"
-                        />
+                    <input type="date"></input>
                 </fieldset>
                 <fieldset>
                     <label>Description: </label>
-                    <input placeholder='description' ref={descRef} required></input>
+                    <input type="text"
+                           value={description}
+                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(description)}
+                           placeholder='description'
+                           required>
+                    </input>
                 </fieldset>
                 <button type='submit'>Submit</button>
             </form>

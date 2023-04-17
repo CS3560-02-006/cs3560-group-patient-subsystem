@@ -3,9 +3,8 @@ import React from 'react'
 //UI functionality for creating a patient record
 const CreatePatient = () => {
 
-  const handleSubmit = (e) => {
-    e.preventdefault()
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
   }
 
   return (

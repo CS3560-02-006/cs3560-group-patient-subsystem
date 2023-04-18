@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'scheduling'
 ]
 
 MIDDLEWARE = [
@@ -77,10 +78,19 @@ WSGI_APPLICATION = 'patient_subsystem.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    # SQL lite connection, saved f
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+            'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'appointmentsdb',
+            'USER': 'root',
+            'PASSWORD': 'password',
+            'HOST':'localhost',
+            'PORT':'3306',
+        }
 }
 
 

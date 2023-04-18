@@ -27,6 +27,9 @@ const CreateAppointment = () => {
         // console.log(await response.json())
     }
 
+
+    // need intervals for dates
+
     //Filters Time need to replace hardcode numbers with variables queried from DB
     const timeFilter = (time) => {
         const selectedDate = new Date(time);
@@ -50,7 +53,7 @@ const CreateAppointment = () => {
         <div>
             <form onSubmit={handleSubmit}>
                 <fieldset>
-                    <select value={doctor} onChange={(e: React.ChangeEvent<HTMLSelectElement>)=>setDoctor(e.target.value)}>
+                    <select value={doctor} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDoctor(e.target.value)}>
                         <option></option>
                         <option value="Doc1">Doc1</option>
                     </select>
@@ -63,7 +66,7 @@ const CreateAppointment = () => {
                     <label>Description: </label>
                     <input type="text"
                            value={description}
-                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(description)}
+                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
                            placeholder='description'
                            required>
                     </input>

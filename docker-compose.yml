@@ -31,17 +31,17 @@ services:
         condition: service_healthy
     networks:
       - virtual
-  # frontend:
-  #   command: sh -c "npm install && npm start"
-  #   build: 
-  #     context: frontend
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - virtual
-  #   working_dir: /app
-  #   volumes:
-  #     - ./frontend:/app
+  frontend:
+    command: sh -c "npm install && npm start"
+    build: 
+      context: frontend
+    ports:
+      - 3000:3000
+    networks:
+      - virtual
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
     
 
 volumes:

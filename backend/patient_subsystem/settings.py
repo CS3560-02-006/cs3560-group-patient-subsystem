@@ -88,7 +88,7 @@ DATABASES = {
             'NAME': 'appointmentsdb',
             'USER': 'root',
             'PASSWORD': 'password',
-            'HOST':'localhost',
+            'HOST':'database',
             'PORT':'3306',
         }
 }

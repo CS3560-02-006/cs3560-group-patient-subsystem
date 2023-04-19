@@ -14,6 +14,7 @@ export const statusFromString = (str: string): APPOINTMENT_STATUS => {
 }
 
 export interface Appointment {
+    id: number,
     patient?: string,
     doctor: Doctor,
 

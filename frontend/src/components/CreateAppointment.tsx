@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react'
+import { Doctor } from '../types/Doctor';
+import { Appointment } from '../types/Appointment';
+import AppointmentSelector from './AppointmentSelector';
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
     const [date, setDate] = useState<Date | null>(null);
-    const [doctor, setDoctor] = useState<string>("")
+    const [doctorList, setDoctorList] = useState<Doctor[] | null>(null);
+    const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+    const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null)
     const [description, setDescription] = useState<string>("");
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         console.log({
             date : date,
             description: description,
-            doctor: doctor,
+            doctor: activeDoctor,
             status: "unconfirmed"
             // patientID: <-- Depends on user identification
         });
@@ -27,51 +31,65 @@ const CreateAppointment = () => {
         // console.log(await response.json())
     }
 
+    const handleSetDoctor = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (!doctorList || doctorList.length === 0) {
+            return;
+        }
+
+        const name = e.target.value;
+
+        if (name === "") {
+            return;
+        }
+
+        const doctor = doctorList?.find(d => d.name == name);
+
+        if (doctor) {
+            setActiveDoctor(doctor);
+            setSelectedAppointment(null);
+        } else {
+            console.error("unknown doctor:" + name);
+        }
+    };
 
     // need intervals for dates
-
-    //Filters Time need to replace hardcode numbers with variables queried from DB
-    const timeFilter = (time) => {
-        const selectedDate = new Date(time);
-        let selectedTime = selectedDate.getHours()*60 + selectedDate.getMinutes()
-    
-        return (selectedTime < 17*60 && 7*60+30 < selectedTime );
-    }
-
-    //Filters Days need to replace hardcoded numbers with variables queried from DB
-    const dayFilter = (date) => {
-        const day = getDay(date);
-        return day !== 1 && day !== 5;
-    }
 
     //Resets Date If Doctor is Changed
     useEffect(()=>{
         setDate(null)
-    }, [doctor])
+    }, [activeDoctor])
+
+    const appointmentField = (
+        <>
+            <fieldset>
+                <label>Appointment Time</label>
+                <AppointmentSelector 
+                    appointments={(activeDoctor as Doctor).appointments}
+                    setSelectedAppointment={setSelectedAppointment}
+                />
+            </fieldset>
+            <fieldset>
+                <label>Description: </label>
+                <input type="text"
+                    value={description}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+                    placeholder='description'
+                    required>
+                </input>
+            </fieldset>
+            <button type='submit'>Submit</button>
+        </>
+    );
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <fieldset>
-                    <select value={doctor} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setDoctor(e.target.value)}>
-                        <option></option>
-                        <option value="Doc1">Doc1</option>
+                    <select value={activeDoctor?.name || ""} onChange={handleSetDoctor}>
+                        {doctorList?.map(doctor => <option key={doctor.id}>{doctor.name}</option>) || "No doctors available..."}
                     </select>
                 </fieldset>
-                <fieldset>
-                    <label>Appointment Time </label>
-                    <input type="date"></input>
-                </fieldset>
-                <fieldset>
-                    <label>Description: </label>
-                    <input type="text"
-                           value={description}
-                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
-                           placeholder='description'
-                           required>
-                    </input>
-                </fieldset>
-                <button type='submit'>Submit</button>
+                {activeDoctor && appointmentField}
             </form>
         </div>
     )

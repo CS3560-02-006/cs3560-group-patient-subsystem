@@ -14,6 +14,10 @@ services:
       - ./backend/db:/var/lib/mysql
     networks:
       - virtual
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 5s
+      retries: 10
   backend:
     build: backend
     ports:
@@ -23,7 +27,8 @@ services:
     volumes:
       - ./backend:/src
     depends_on: 
-      - database
+      database:
+        condition: service_healthy
     networks:
       - virtual
   frontend:

@@ -78,11 +78,7 @@ WSGI_APPLICATION = 'patient_subsystem.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # SQL lite connection, saved f
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    # Connection to MySQL Database in Docker
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'appointmentsdb',

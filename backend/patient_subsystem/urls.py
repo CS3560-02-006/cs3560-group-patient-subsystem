@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('appointment/', views.appointmentHandler),
     path('doctor/', views.doctorHandler),
-    path('patient', views.patientHandler)
+    path('patient/', views.patientHandler),
+    path('auth/', views.authenticationHandler)
 ]

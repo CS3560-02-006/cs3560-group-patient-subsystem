@@ -1,6 +1,7 @@
 import { Appointment } from "../types/Appointment"
 import { createGroups } from "../utils/months";
 import AppointmentMonth from "./AppointmentMonth";
+import AvailableAppointmentDay from "./AvailableAppointmentDay";
 
 type AppointmentSelectorProps = {
     appointments: Appointment[];
@@ -24,7 +25,9 @@ const AppointmentSelector = ({ appointments, setSelectedAppointment }: Appointme
 
     return (
         <div>
-            {groups.map(({month, appointments}) => <AppointmentMonth key={month} title={month} appointments={appointments}/>)}
+            {groups.map(({month, appointments: apps}) => <AppointmentMonth key={month} title={month}>
+                {apps.map(a => <AvailableAppointmentDay key={a.id} appointment={a} selectHandler={setSelectedAppointment} />)}
+            </AppointmentMonth>)}
         </div>
     )
 }

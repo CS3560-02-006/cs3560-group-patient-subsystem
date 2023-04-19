@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Doctor } from '../types/Doctor';
 import { Appointment } from '../types/Appointment';
 import AppointmentSelector from './AppointmentSelector';
+import AppointmentMiniCard from './AppointmentMiniCard';
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
-    const [date, setDate] = useState<Date | null>(null);
-    const [doctorList, setDoctorList] = useState<Doctor[] | null>(null);
+    const [doctorList, setDoctorList] = useState<Doctor[]>([]);
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
     const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null)
     const [description, setDescription] = useState<string>("");
@@ -56,7 +56,7 @@ const CreateAppointment = () => {
 
     //Resets Date If Doctor is Changed
     useEffect(()=>{
-        setDate(null)
+        setSelectedAppointment(null);
     }, [activeDoctor])
 
     const appointmentField = (
@@ -77,6 +77,10 @@ const CreateAppointment = () => {
                     required>
                 </input>
             </fieldset>
+            <div>
+                <p>Selected appointment:</p>
+                <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
+            </div>
             <button type='submit'>Submit</button>
         </>
     );

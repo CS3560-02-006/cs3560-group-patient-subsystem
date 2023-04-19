@@ -1,11 +1,13 @@
 from rest_framework.response import Response
+from scheduling.models import Appointment
+from scheduling.serializers import AppointmentSerializer
 
 # Methods for appointments
 # Fetches all appointments
 def getAppointments(request):
-    # Query DB
-    # Return Appointments
-    return Response(request.data)
+    appointments = Appointment.objects.all()
+    serializer = AppointmentSerializer(appointments, many =True)
+    return Response(serializer.data)
 
 # Creates new appointment
 def createAppointment(request):

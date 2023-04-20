@@ -1,13 +1,21 @@
 from rest_framework.response import Response
-from scheduling.models import Appointment
-from scheduling.serializers import AppointmentSerializer
+from django.db import connection
 
 # Methods for appointments
 # Fetches all appointments
 def getAppointments(request):
-    appointments = Appointment.objects.all()
-    serializer = AppointmentSerializer(appointments, many =True)
-    return Response(serializer.data)
+    cursor = connection.cursor()
+    cursor.execute('Select * from appointment')
+    output =[]
+    for row in cursor:
+        lt = []
+        for i, value in enumerate(row):
+            if value != None:
+                lt.append((cursor.description[i][0], value))
+        else:
+            lt = dict(lt)
+            output.append(lt)
+    return Response(output)
 
 # Creates new appointment
 def createAppointment(request):

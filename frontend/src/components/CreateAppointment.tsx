@@ -3,6 +3,7 @@ import { Doctor } from '../types/Doctor';
 import { Appointment } from '../types/Appointment';
 import AppointmentSelector from './AppointmentSelector';
 import AppointmentMiniCard from './AppointmentMiniCard';
+import { fetchAvailableDoctors } from '../utils/api';
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
     const [doctorList, setDoctorList] = useState<Doctor[]>([]);
@@ -19,7 +20,7 @@ const CreateAppointment = () => {
             status: "unconfirmed"
             // patientID: <-- Depends on user identification
         });
-        // let response = await fetch(`http://127.0.0.1:8000/appointment/`, {
+        // let response = await fetch(`http://:8000/appointment/`, {
         //     method: "POST",
         //     headers: {
         //         'Content-Type' : 'application/json'
@@ -58,13 +59,29 @@ const CreateAppointment = () => {
     useEffect(()=>{
         setSelectedAppointment(null);
     }, [activeDoctor])
+    
+    useEffect(() => {
+        const doFetch = async () => {
+            setDoctorList([]);
+            const result = await fetchAvailableDoctors();
+            if (!ignore) {
+                setDoctorList(result)
+            }
+        }
+
+        let ignore = false;
+        doFetch();
+        return () => {
+            ignore = true;
+        }
+    }, [])
 
     const appointmentField = (
         <>
             <fieldset>
                 <label>Appointment Time</label>
                 <AppointmentSelector 
-                    appointments={(activeDoctor as Doctor).appointments}
+                    appointments={(activeDoctor as Doctor).appointments.filter(app => app.status === "AVAILABLE")}
                     setSelectedAppointment={setSelectedAppointment}
                 />
             </fieldset>

@@ -13,9 +13,9 @@ const CreateAppointment = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log({
+        console.log(
             "not implemented"
-        });
+        );
         // let response = await fetch(`http://:8000/appointment/`, {
         //     method: "POST",
         //     headers: {

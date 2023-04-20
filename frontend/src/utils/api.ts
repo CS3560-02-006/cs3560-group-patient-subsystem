@@ -1,4 +1,4 @@
-const API_PATH = "http://backend:8000"
+const API_PATH = "/api"
 
 const fetchAvailableDoctors = async () => {
     const resp = await fetch(API_PATH+"/doctor");

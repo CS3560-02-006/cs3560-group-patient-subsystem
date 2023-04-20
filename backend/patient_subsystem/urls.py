@@ -18,9 +18,9 @@ from django.urls import path
 from scheduling import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('appointment/', views.appointmentHandler),
-    path('doctor/', views.doctorHandler),
-    path('patient/', views.patientHandler),
-    path('auth/', views.authenticationHandler)
+    path('api/admin/', admin.site.urls),
+    path('api/appointment/', views.appointmentHandler),
+    path('api/doctor/', views.doctorHandler),
+    path('api/patient/', views.patientHandler),
+    path('api/auth/', views.authenticationHandler)
 ]

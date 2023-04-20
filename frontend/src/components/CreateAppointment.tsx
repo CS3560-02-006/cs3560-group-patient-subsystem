@@ -12,23 +12,14 @@ const CreateAppointment = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log({
-            date : date,
-            description: description,
-            doctor: activeDoctor,
-            status: "unconfirmed"
-            // patientID: <-- Depends on user identification
-        });
         // let response = await fetch(`http://127.0.0.1:8000/appointment/`, {
         //     method: "POST",
         //     headers: {
         //         'Content-Type' : 'application/json'
         //     },
         //     body: JSON.stringify({
-        //         // description : descRef?.current?.value || "nothing"
         //     })
         // })
-        // console.log(await response.json())
     }
 
     const handleSetDoctor = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -58,6 +49,11 @@ const CreateAppointment = () => {
     useEffect(()=>{
         setSelectedAppointment(null);
     }, [activeDoctor])
+
+    useEffect(()=>{
+        let response = fetch('backend:/doctor')
+        // setDoctorList()
+    },[])
 
     const appointmentField = (
         <>

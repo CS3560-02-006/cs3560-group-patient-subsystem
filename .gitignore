@@ -1,2 +1,4 @@
 backend/patient_subsystem/__pycache__/*
 backend/patient_subsystem/__pycache__/
+backend/scheduling/__pycache__/*
+backend/scheduling/controllers/__pycache/*

@@ -1,6 +1,5 @@
 import { Doctor } from "./Doctor";
 import { Patient } from "./Patient";
-<<<<<<< HEAD
 
 export type APPOINTMENT_STATUS = "AVAILABLE" | "RESERVED" | "UNKNOWN";
 

@@ -17,13 +17,14 @@ services:
   database:
     image: mysql:debian
     restart: always
-    command: --lower-case-table-names=1
     environment:
       MYSQL_ROOT_PASSWORD: password 
+      MYSQL_DATABASE: appointmentsdb
     ports:
       - 3307:3306
     volumes:
-      - ./backend/db:/var/lib/mysql
+      - db:/var/lib/mysql
+      - "./sql/init.sql:/docker-entrypoint-initdb.d/init.sql"
     networks:
       - virtual
     healthcheck:

@@ -1,5 +1,4 @@
 import React from "react";
-import { Appointment } from "../types/Appointment";
 
 type AppointmentMonthProps = {
     title: string,
@@ -9,7 +8,7 @@ type AppointmentMonthProps = {
 const AppointmentMonth = ({title, children}: AppointmentMonthProps) => {
     return (
         <div>
-            <p>{title}</p>
+            <p>{title} (24-hour clock)</p>
             <div>
                 {children}
             </div>

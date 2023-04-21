@@ -5,7 +5,7 @@ from django.db import connection
 # fetches all doctors in database
 def getDoctors(request):
     cursor = connection.cursor()
-    cursor.execute('Select * from doctor')
+    cursor.execute('Select * from Doctor')
     output = []
     for row in cursor:
         lt = []
@@ -16,7 +16,7 @@ def getDoctors(request):
             lt = dict(lt)
             print(lt['doctorID'])
             curs = connection.cursor()
-            curs.execute('select * from appointment where doctorID = {id}'.format(id=lt['doctorID']))
+            curs.execute('select * from Appointment where doctorID = {id}'.format(id=lt['doctorID']))
             appointments = []
             for row in curs:
                 appointment = []

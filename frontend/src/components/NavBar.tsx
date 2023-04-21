@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 const NavBar = () => {
   return (
     <nav className='nav'>
-        <h1>Appointment Scheduler</h1>
+        <h1 className="text-lg">Appointment Scheduler</h1>
       {/* <ul>
           <li>
             <Link to='/createPatient'>CreatePatient</Link>

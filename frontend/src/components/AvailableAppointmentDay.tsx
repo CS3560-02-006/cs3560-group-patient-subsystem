@@ -8,7 +8,7 @@ type AvailableAppointmentDayProps = {
 };
 
 const AvailableAppointmentDay = ({appointment, selectHandler}: AvailableAppointmentDayProps) => {
-    return <AppointmentMiniCard appointment={appointment} onClick={() => selectHandler(appointment)} />
+    return <AppointmentMiniCard className="bg-slate-200 w-fit p-1" appointment={appointment} onClick={() => selectHandler(appointment)} />
 };
 
 export default AvailableAppointmentDay;

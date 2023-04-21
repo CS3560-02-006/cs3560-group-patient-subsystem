@@ -53,6 +53,8 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     
 
 volumes:

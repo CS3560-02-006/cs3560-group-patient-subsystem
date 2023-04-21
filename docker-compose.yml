@@ -23,7 +23,7 @@ services:
     ports:
       - 3307:3306
     volumes:
-      - ./backend/db:/var/lib/mysql
+      - db:/var/lib/mysql
     networks:
       - virtual
     healthcheck:

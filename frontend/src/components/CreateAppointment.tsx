@@ -70,7 +70,7 @@ const CreateAppointment = () => {
         }
     }, [])
 
-    const appointmentField = (
+    const appointmentField = activeDoctor ? (
         <>
             <fieldset>
                 <label>Appointment Time</label>
@@ -93,14 +93,14 @@ const CreateAppointment = () => {
                 <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
             </div>
             <button type='submit'>Submit</button>
-        </>
-    );
+        </> ) : null
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <fieldset>
                     <select value={activeDoctor?.name || ""} onChange={handleSetDoctor}>
+                        <option value="" disabled selected>Select your option</option>
                         {doctorList?.map(doctor => <option key={doctor.id}>{doctor.name}</option>) || "No doctors available..."}
                     </select>
                 </fieldset>

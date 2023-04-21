@@ -1,6 +1,6 @@
 import {HashRouter as Router, Route, Routes} from "react-router-dom"
 import CreateAppointment from './components/CreateAppointment';
-import CreatePatient from './components/CreatePatient';
+import CreatePatient from './components/CreatePatient/CreatePatient';
 import Home from "./components/Home";
 import Navbar from "./components/NavBar/NavBar";
 

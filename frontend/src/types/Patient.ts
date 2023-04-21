@@ -5,7 +5,7 @@ export interface Patient {
     name: string,
     dateOfBirth: Date,
     phoneNumber: string,
-    insuraneProvider: string,
+    insuranceProvider: string,
     policyNumber: string,
 
     address: Address,

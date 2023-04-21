@@ -4,6 +4,7 @@ import { Appointment } from '../types/Appointment';
 import AppointmentSelector from './AppointmentSelector';
 import AppointmentMiniCard from './AppointmentMiniCard';
 import { fetchAvailableDoctors } from '../utils/api';
+import Padded from '../layout/Padded';
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
     const [doctorList, setDoctorList] = useState<Doctor[]>([]);
@@ -37,11 +38,10 @@ const CreateAppointment = () => {
             return;
         }
 
-        const doctor = doctorList?.find(d => d.name == name);
+        const doctor = doctorList?.find(d => d.name === name);
 
         if (doctor) {
             setActiveDoctor(doctor);
-            setSelectedAppointment(null);
         } else {
             console.error("unknown doctor:" + name);
         }
@@ -59,7 +59,9 @@ const CreateAppointment = () => {
             setDoctorList([]);
             const result = await fetchAvailableDoctors();
             if (!ignore) {
-                setDoctorList(result)
+                console.log(result);
+                setDoctorList(result);
+                setActiveDoctor(result[0]);
             }
         }
 
@@ -70,43 +72,51 @@ const CreateAppointment = () => {
         }
     }, [])
 
+    const selectedComponent = selectedAppointment ? (
+            <Padded>
+                <p>Selected appointment:</p>
+                <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
+            </Padded>
+    ) : <></>
+
     const appointmentField = activeDoctor ? (
         <>
             <fieldset>
-                <label>Appointment Time</label>
-                <AppointmentSelector 
-                    appointments={(activeDoctor as Doctor).appointments.filter(app => app.status === "AVAILABLE")}
-                    setSelectedAppointment={setSelectedAppointment}
-                />
+                <Padded>
+                    <label>Select Appointment:</label>
+                    <AppointmentSelector
+                        appointments={(activeDoctor as Doctor).appointments.filter(app => app.status === "available")}
+                        setSelectedAppointment={setSelectedAppointment}
+                    />
+                </Padded>
             </fieldset>
             <fieldset>
-                <label>Description: </label>
-                <input type="text"
-                    value={description}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
-                    placeholder='description'
-                    required>
-                </input>
+                <Padded>
+                    <label>Description: </label>
+                    <textarea
+                        value={description}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+                        placeholder='description'
+                        required>
+                    </textarea>
+                </Padded>
             </fieldset>
-            <div>
-                <p>Selected appointment:</p>
-                <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
-            </div>
-            <button type='submit'>Submit</button>
+            {selectedComponent}
+            <button className="p-2 rounded-lg bg-red-400" type='submit'>Submit</button>
         </> ) : null
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <fieldset>
-                    <select value={activeDoctor?.name || ""} onChange={handleSetDoctor}>
-                        <option value="" disabled selected>Select your option</option>
-                        {doctorList?.map(doctor => <option key={doctor.id}>{doctor.name}</option>) || "No doctors available..."}
-                    </select>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80 items-stretch">
+                <fieldset className=''>
+                    <Padded>
+                        Doctor:
+                        <select value={activeDoctor?.name || ""} onChange={handleSetDoctor}>
+                            {doctorList?.map(doctor => (<option key={doctor.doctorID}> {doctor.name} </option>)) || "No doctors available..."}
+                        </select>
+                    </Padded>
                 </fieldset>
                 {activeDoctor && appointmentField}
             </form>
-        </div>
     )
 }
 

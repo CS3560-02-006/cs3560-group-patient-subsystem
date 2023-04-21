@@ -1,16 +1,16 @@
 import { Doctor } from "./Doctor";
 import { Patient } from "./Patient";
 
-export type APPOINTMENT_STATUS = "AVAILABLE" | "RESERVED" | "UNKNOWN";
+export type APPOINTMENT_STATUS = "available" | "reserved" | "unknown";
 
 export const statusFromString = (str: string): APPOINTMENT_STATUS => {
-    switch (str.toUpperCase()) {
-        case "AVAILABLE":
-        case "RESERVED":
-        case "UNKNOWN":
-            return str.toUpperCase() as APPOINTMENT_STATUS;
+    switch (str.toLowerCase()) {
+        case "available":
+        case "reserved":
+        case "unknown":
+            return str.toLowerCase() as APPOINTMENT_STATUS;
         default:
-            return "UNKNOWN";
+            return "unknown";
     }
 }
 
@@ -19,8 +19,8 @@ export interface Appointment {
     patient?: Patient,
     doctor: Doctor,
 
-    start: Date,
-    end: Date,
+    startTime: Date,
+    endTime: Date,
 
     description: string,
     status: APPOINTMENT_STATUS,

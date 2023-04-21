@@ -1,7 +1,7 @@
 import { Appointment } from "./Appointment";
 
 export interface Doctor {
-    id: number,
+    doctorID: number,
     name: string,
     phoneNumber: string,
     emailAddress: string,

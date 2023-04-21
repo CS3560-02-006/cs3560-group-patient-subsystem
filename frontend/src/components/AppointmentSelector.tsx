@@ -20,6 +20,9 @@ const AppointmentSelector = ({ appointments, setSelectedAppointment }: Appointme
         ...
     ]
     */
+   if (appointments.length === 0) {
+    return <div>No available appointments</div>
+   }
 
     const groups = createGroups(appointments);
 

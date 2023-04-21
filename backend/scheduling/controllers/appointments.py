@@ -5,7 +5,7 @@ from django.db import connection
 # Fetches all appointments
 def getAppointments(request):
     cursor = connection.cursor()
-    cursor.execute('Select * from appointment')
+    cursor.execute('Select * from Appointment')
     output =[]
     for row in cursor:
         lt = []

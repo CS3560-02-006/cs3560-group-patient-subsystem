@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {useEffect} from 'react'
+import { fetchAvailableDoctors } from '../utils/api';
 
 //UI functionality for creating a patient record
 const CreatePatient = () => {
@@ -6,7 +7,13 @@ const CreatePatient = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   }
-
+  useEffect(()=>{
+    const doFetch = async () => {
+      const result = await fetchAvailableDoctors();
+      console.log(result)
+    }
+    doFetch();
+},[]);
   return (
     <div>
       <form onSubmit={handleSubmit}>

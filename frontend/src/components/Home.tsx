@@ -15,8 +15,6 @@ const Home = () => {
   return (
     <div>
       <h1>Home</h1>
-      <Link to='/createPatient'>CreatePatient</Link>
-      <Link to='/createAppointment'>CreateAppointment</Link>
     </div>
   )
 }

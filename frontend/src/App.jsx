@@ -2,12 +2,12 @@ import {HashRouter as Router, Route, Routes} from "react-router-dom"
 import CreateAppointment from './components/CreateAppointment';
 import CreatePatient from './components/CreatePatient';
 import Home from "./components/Home";
-import Navbar from "./components/NavBar";
+import Navbar from "./components/NavBar/NavBar";
 
 function App() {
   return (<>
-    <Navbar/>
     <Router>
+      <Navbar/>
       <Routes>
         <Route exact path="/" element={<Home />}/>
         <Route exact path="/createAppointment/" element={<CreateAppointment />}/>

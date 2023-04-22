@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './auth.css'
 
 interface Props {
-  onLogin: (token: string) => void;
+  onLogin: (token: string, userID: string, email: string, userType: string, patientID: string) => void;
 }
 
 const Login: React.FC<Props> = ({ onLogin }) => {
@@ -20,7 +20,7 @@ const Login: React.FC<Props> = ({ onLogin }) => {
 
     if (response.ok) {
       const data = await response.json();
-      onLogin(data.token);
+      onLogin(data.token, data.userID, data.email, data.userType, data.patientID);
     } else {
       setError('Invalid email or password');
     }

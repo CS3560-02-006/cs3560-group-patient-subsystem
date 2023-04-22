@@ -8,10 +8,22 @@ import Login from './authentication/Login';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('auth_token')));
+  const [userDetails, setUserDetails] = useState({
+    userID: localStorage.getItem('user_id') || '',
+    email: localStorage.getItem('email') || '',
+    userType: localStorage.getItem('user_type') || '',
+    patientID: localStorage.getItem('patient_id') || '',
+  });
+  
 
-  const handleLogin = (token: string) => {
+  const handleLogin = (token: string, userID: string, email: string, userType: string, patientID: string) => {
     localStorage.setItem('auth_token', token);
+    localStorage.setItem('user_id', userID);
+    localStorage.setItem('email', email);
+    localStorage.setItem('user_type', userType);
+    localStorage.setItem('patient_id', patientID);
     setIsLoggedIn(true);
+    setUserDetails({ userID, email, userType, patientID });
   };
 
   const handleLogout = () => {
@@ -26,7 +38,7 @@ function App() {
         {isLoggedIn ? (
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/createAppointment/" element={<CreateAppointment />} />
+            <Route path="/createAppointment/" element={<CreateAppointment userDetails={userDetails}/>} />
             <Route path="/createPatient" element={<CreatePatient />} />
           </Routes>
         ) : (

@@ -1,12 +1,6 @@
--- MySQL Workbench Forward Engineering
-
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema appointmentsdb
--- -----------------------------------------------------
 
 -- -----------------------------------------------------
 -- Schema appointmentsdb
@@ -120,6 +114,20 @@ INSERT INTO Doctor(name, dateofBirth, specialty)
     ("Bill Gato", "1975-05-21", "Endocrinologist")
 ;
 
+INSERT INTO Patient(name, dateOfBirth, phoneNumber, insuranceProvider, policyNumber)
+	VALUES
+    ("John Doe", "1985-01-01", "123-456-7890", "Aetna", "A123456"),
+    ("Jane Smith", "1972-05-13", "555-555-5555", "Blue Cross", "B987654"),
+    ("Bob Johnson", "1990-11-30", "222-333-4444", "Cigna", "C246810")
+;
+
+INSERT INTO Address(patientID, street, apt, city, state, zipcode)
+	VALUES
+    (1, "123 Main St", NULL, "Anytown", "CA", "12345"),
+    (2, "456 Park Ave", "Apt 101", "Smallville", "NY", "67890"),
+    (3, "789 Elm St", NULL, "Big City", "IL", "54321")
+;
+
 INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
 	VALUES
     (1, "2023-05-09","12:30:00", "13:00:00", "available"),
@@ -129,7 +137,3 @@ INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
     (3, "2023-05-13","15:30:00", "16:00:00", "available"),
     (3, "2023-05-12","16:00:00", "16:30:00", "available")
 ;
-
-
--- Select * from Doctor;
--- select * from Appointment;

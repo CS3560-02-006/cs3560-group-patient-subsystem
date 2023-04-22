@@ -16,7 +16,7 @@ def loginHandler(request):
 
 # Routes to appropriate controls for appointments depending on http method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-@api_authentication
+# @api_authentication
 def appointmentHandler(request):
     if request.method == 'GET':
         return getAppointments(request)

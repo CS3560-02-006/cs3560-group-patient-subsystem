@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {Patient} from '../../types/Patient';
-import {Address} from '../../types/Address';
+import { getAuthHeaders } from '../../utils/api';
 import './patient.css';
 
 const CreatePatient = () => {
@@ -54,9 +54,7 @@ const CreatePatient = () => {
       console.log(patient)
       const response = await fetch('/api/patient/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: getAuthHeaders(),
         body: JSON.stringify(patient)
       });
   

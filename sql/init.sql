@@ -86,20 +86,20 @@ ENGINE = InnoDB;
 -- Table `appointmentsdb`.`User`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `appointmentsdb`.`User` (
-  `userID` INT NOT NULL AUTO_INCREMENT,
-  `email` VARCHAR(255) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `userType` VARCHAR(45) NOT NULL,
-  `patientID` INT NULL,
-  PRIMARY KEY (`userID`),
-  INDEX `fk_User_Patient1_idx` (`patientID` ASC) VISIBLE,
-  CONSTRAINT `fk_User_Patient1`
-    FOREIGN KEY (`patientID`)
-    REFERENCES `appointmentsdb`.`Patient` (`patientID`)
+  userID INT NOT NULL AUTO_INCREMENT,
+  email VARCHAR(255) NOT NULL,
+  passwordHash VARBINARY(64) NOT NULL,
+  passwordSalt VARBINARY(32) NOT NULL,
+  userType VARCHAR(45) NOT NULL,
+  patientID INT NULL,
+  PRIMARY KEY (userID),
+  INDEX fk_User_Patient1_idx (patientID ASC) VISIBLE,
+  CONSTRAINT fk_User_Patient1
+    FOREIGN KEY (patientID)
+    REFERENCES appointmentsdb.Patient (patientID)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
+    ON UPDATE NO ACTION
+) ENGINE = InnoDB;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -137,3 +137,11 @@ INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
     (3, "2023-05-13","15:30:00", "16:00:00", "available"),
     (3, "2023-05-12","16:00:00", "16:30:00", "available")
 ;
+
+INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, patientID) VALUES (
+  'clerk@hospital.com', 
+  UNHEX('6c4f41c0f79f7d018087c335d82c9e4133d6df79531d4fece4ea4a71700148ec5425d00734959dfea70bc0b00a6bdc299340a8c6d845a7261dc34f4a3b41aba5'), 
+  UNHEX('f33f81d480872fe6f0888fc0ee094d3e771365eec133476c7d2f58a769c7bbab'), 
+  'clerk', 
+  NULL
+);

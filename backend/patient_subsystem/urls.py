@@ -23,5 +23,6 @@ urlpatterns = [
     re_path(r'^api/appointment(?:/(?P<appointment_id>\d+))?/$', views.appointmentHandler),
     path('api/doctor/', views.doctorHandler),
     re_path(r'^api/patient(?:/(?P<patient_id>\d+))?/$', views.patientHandler),
-    path('api/auth/', views.authenticationHandler)
+    path('api/login/', views.loginHandler),
+    re_path(r'^api/user(?:/(?P<user_id>\d+))?/$', views.userHandler),
 ]

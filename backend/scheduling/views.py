@@ -5,10 +5,18 @@ from rest_framework.response import Response
 from scheduling.controllers.appointments import getAppointments, createAppointment, updateAppointment, deleteAppointment
 from scheduling.controllers.patients import getPatients, createPatient, updatePatient, deletePatient
 from scheduling.controllers.doctors import  getDoctors
-from scheduling.controllers.auth import createUser, updateUser, deleteUser
+from scheduling.controllers.auth import getUser, createUser, updateUser, deleteUser, loginUser, getUser
+from .authentication import api_authentication
+
+
+@api_view(['POST'])
+def loginHandler(request): 
+    return loginUser(request)
+
 
 # Routes to appropriate controls for appointments depending on http method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
+@api_authentication
 def appointmentHandler(request):
     if request.method == 'GET':
         return getAppointments(request)
@@ -21,6 +29,7 @@ def appointmentHandler(request):
 
 # Routes to appropriate controls for doctors depending on http method
 @api_view(['GET'])
+@api_authentication
 def doctorHandler(request):
     return getDoctors(request)
     
@@ -28,6 +37,7 @@ def doctorHandler(request):
 
 # Routes to appropriate controls for patients depending on http method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
+@api_authentication
 def patientHandler(request, patient_id=None):
     if request.method == 'GET':
         patients = getPatients(request, patient_id)
@@ -40,12 +50,29 @@ def patientHandler(request, patient_id=None):
         return deletePatient(request, patient_id)
     
 
-@api_view(['POST', 'PATCH', 'DELETE'])
-def authenticationHandler(request):
-    if request.method == 'POST':
+
+
+@api_view(['GET', 'POST', 'PATCH', 'DELETE'])
+@api_authentication
+def userHandler(request, user_id=None):
+    if request.method == 'GET':
+        if user_id:
+            user = getUser(user_id)
+            if user:
+                return Response(user, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return getUser(request)
+    elif request.method == 'POST':
         return createUser(request)
-    if request.method == 'PATCH':
-        return updateUser(request)
-    if request.method == 'DELETE':
-        return deleteUser(request)
-    
+    elif request.method == 'PATCH':
+        return updateUser(request, user_id)
+    elif request.method == 'DELETE':
+        success = deleteUser(user_id)
+        if success:
+            return Response({"success": "User deleted"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+

@@ -2,11 +2,12 @@ import {useState} from 'react'
 import {Link} from 'react-router-dom'
 import './nav.css'
 
+interface Props {
+  isLoggedIn: boolean;
+  onLogout: () => void;
+}
 
-
-const NavBar = () => {
-  const [user, setUser] = useState(null)
-
+const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout }) => {
   return<>
     <div className='banner'>
       <h1><Link to='/'>Appointment Scheduler</Link></h1>
@@ -27,8 +28,17 @@ const NavBar = () => {
           <i className="fa fa-caret-down"></i>
         </button>
         <div className="dropdown-content">
-          <Link to=''>Update Account</Link>
-          <Link to=''>Delete Account</Link>
+        {isLoggedIn ? (
+            <div className="dropdown-content">
+              <Link to=''>Update Account</Link>
+              <div className="logout-link" onClick={onLogout}>Logout</div>
+            </div>
+          ) : (
+            <div className="dropdown-content">
+              <Link to=''>Login</Link>
+              <Link to=''>Signup</Link>
+            </div>
+          )}
         </div>
       </div>
       <div className="dropdown">

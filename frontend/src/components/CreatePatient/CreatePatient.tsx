@@ -5,9 +5,9 @@ import './patient.css';
 
 const CreatePatient = () => {
   const [patient, setPatient] = useState<Patient>({
-    id: 0,
+    patientID: 0,
     name: '',
-    dateOfBirth: new Date(),
+    dateOfBirth: new Date().toISOString().substr(0, 10),
     phoneNumber: '',
     insuranceProvider: '',
     policyNumber: '',
@@ -28,6 +28,14 @@ const CreatePatient = () => {
     }));
   };
 
+  const handleDateOfBirthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setPatient((prevState: Patient) => ({
+      ...prevState,
+      dateOfBirth: value,
+    }));
+  };
+
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setPatient((prevState:Patient) => ({
@@ -43,7 +51,8 @@ const CreatePatient = () => {
     event.preventDefault();
     
     try {
-      const response = await fetch('/api/patient', {
+      console.log(patient)
+      const response = await fetch('/api/patient/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -74,7 +83,7 @@ const CreatePatient = () => {
         </label>
         <label>
           Date of Birth:
-          <input type="date" name="dateOfBirth" value={patient.dateOfBirth.toLocaleDateString('en-CA')} onChange={handleChange} />
+          <input type="date" name="dateOfBirth" value={patient.dateOfBirth} onChange={handleDateOfBirthChange} />
         </label>
         <label>
           Insurance Provider:

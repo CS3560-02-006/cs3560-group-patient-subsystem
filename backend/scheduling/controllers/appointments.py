@@ -4,18 +4,25 @@ from django.db import connection
 # Methods for appointments
 # Fetches all appointments
 def getAppointments(request):
-    cursor = connection.cursor()
-    cursor.execute('Select * from Appointment')
-    output =[]
-    for row in cursor:
-        lt = []
-        for i, value in enumerate(row):
-            if value != None:
-                lt.append((cursor.description[i][0], value))
-        else:
-            lt = dict(lt)
-            output.append(lt)
-    return Response(output)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM Appointment")
+        result = [dict(zip([column[0] for column in cursor.description], row)) for row in cursor.fetchall()]
+
+    # Map the result to match the frontend interface
+    formatted_appointments = []
+    for row in result:
+        appointment = {
+            'appointmentID': row['appointmentID'],
+            'doctorID': row['doctorID'],
+            'patientID': row['patientID'],
+            'date': row['date'].strftime('%Y-%m-%d'),
+            'startTime': row['startTime'].strftime('%H:%M:%S'),
+            'endTime': row['endTime'].strftime('%H:%M:%S'),
+            'status': row['status'],
+        }
+        formatted_appointments.append(appointment)
+
+    return Response(formatted_appointments)
 
 # Creates new appointment
 def createAppointment(request):

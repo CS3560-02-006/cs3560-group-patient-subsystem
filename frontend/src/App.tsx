@@ -38,7 +38,7 @@ function App() {
         {isLoggedIn ? (
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/createAppointment/" element={<CreateAppointment userDetails={userDetails}/>} />
+            <Route path="/createAppointment/" element={<CreateAppointment />} />
             <Route path="/createPatient" element={<CreatePatient />} />
           </Routes>
         ) : (

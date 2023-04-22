@@ -73,51 +73,55 @@ const CreateAppointment = () => {
     }, [])
 
     const selectedComponent = selectedAppointment ? (
-            <Padded>
-                <p>Selected appointment:</p>
-                <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
-            </Padded>
-    ) : <></>
+        <div className="bg-white rounded-lg p-4 mb-4">
+          <p className="mb-2">Selected appointment:</p>
+          <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
+        </div>
+      ) : <></>;
+
 
     const appointmentField = activeDoctor ? (
         <>
-            <fieldset>
-                <Padded>
-                    <label>Select Appointment:</label>
-                    <AppointmentSelector
-                        appointments={(activeDoctor as Doctor).appointments.filter(app => app.status === "available")}
-                        setSelectedAppointment={setSelectedAppointment}
-                    />
-                </Padded>
+            <fieldset className="bg-white rounded-lg p-4 mb-4">
+            <label className="block mb-2">Select Appointment:</label>
+            <AppointmentSelector
+                appointments={(activeDoctor as Doctor).appointments.filter(app => app.status === "available")}
+                setSelectedAppointment={setSelectedAppointment}
+            />
             </fieldset>
-            <fieldset>
-                <Padded>
-                    <label>Description: </label>
-                    <textarea
-                        value={description}
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
-                        placeholder='description'
-                        required>
-                    </textarea>
-                </Padded>
+            <fieldset className="bg-white rounded-lg p-4 mb-4">
+                <label className="block mb-2">Description: </label>
+                <textarea
+                    value={description}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
+                    placeholder='description'
+                    className="rounded-md border p-2 w-full resize-none bg-gray-200"
+                    required>
+                </textarea>
             </fieldset>
-            {selectedComponent}
-            <button className="p-2 rounded-lg bg-red-400" type='submit'>Submit</button>
+          {selectedComponent}
+          <div className="flex justify-between">
+            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white" type='submit'>Submit</button>
+            <button className="px-4 py-2 rounded-lg bg-red-600 text-white" type='button' onClick={() => {}}>Cancel</button>
+          </div>
         </> ) : null
-
-    return (
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80 items-stretch">
-                <fieldset className=''>
-                    <Padded>
-                        Doctor:
-                        <select value={activeDoctor?.name || ""} onChange={handleSetDoctor}>
-                            {doctorList?.map(doctor => (<option key={doctor.doctorID}> {doctor.name} </option>)) || "No doctors available..."}
-                        </select>
-                    </Padded>
-                </fieldset>
-                {activeDoctor && appointmentField}
-            </form>
-    )
+      
+      return (
+        <div className="min-h-screen flex flex-col justify-start bg-gray-100">
+        <div className="w-full flex justify-center py-12">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80 items-stretch bg-gray-200 p-4 rounded-lg">
+            <h2 className="text-2xl font-semibold mb-4">Create Appointment</h2>
+            <fieldset className='bg-white rounded-lg p-4 mb-4'>
+              <label className="block mb-2">Doctor:</label>
+              <select value={activeDoctor?.name || ""} onChange={handleSetDoctor} className="rounded-md border bg-gray">
+                {doctorList?.map(doctor => (<option key={doctor.doctorID}> {doctor.name} </option>)) || "No doctors available..."}
+              </select>
+            </fieldset>
+            {activeDoctor && appointmentField}
+          </form>
+          </div>
+        </div>
+      );
 }
 
 export default CreateAppointment

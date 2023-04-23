@@ -1,7 +1,7 @@
 import { Doctor } from "./Doctor";
 import { Patient } from "./Patient";
 
-export type APPOINTMENT_STATUS = "available" | "reserved" | "unknown";
+export type APPOINTMENT_STATUS = "available" | "scheduled" | "unknown";
 
 export const statusFromString = (str: string): APPOINTMENT_STATUS => {
     switch (str.toLowerCase()) {

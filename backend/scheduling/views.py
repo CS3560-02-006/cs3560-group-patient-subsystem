@@ -37,7 +37,6 @@ def doctorHandler(request):
 
 # Routes to appropriate controls for patients depending on http method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-@api_authentication
 def patientHandler(request, patient_id=None):
     if request.method == 'GET':
         patients = getPatients(request, patient_id)
@@ -53,7 +52,6 @@ def patientHandler(request, patient_id=None):
 
 
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-@api_authentication
 def userHandler(request, user_id=None):
     if request.method == 'GET':
         if user_id:

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'
 import './auth.css'
 
 interface Props {
@@ -47,6 +48,10 @@ const Login: React.FC<Props> = ({ onLogin }) => {
         />
         <button type="submit">Login</button>
       </form>
+      <div className="switch-auth">
+        <span>Need an account? </span>
+        <Link to="/signup">Sign up</Link>
+      </div>
     </div>
   );
 };

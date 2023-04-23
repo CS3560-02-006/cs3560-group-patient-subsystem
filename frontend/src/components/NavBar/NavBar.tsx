@@ -35,8 +35,8 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout }) => {
             </div>
           ) : (
             <div className="dropdown-content">
-              <Link to=''>Login</Link>
-              <Link to=''>Signup</Link>
+              <Link to='/'>Login</Link>
+              <Link to='/signup'>Signup</Link>
             </div>
           )}
         </div>

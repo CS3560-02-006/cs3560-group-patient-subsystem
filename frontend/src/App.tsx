@@ -5,6 +5,7 @@ import CreatePatient from './components/CreatePatient/CreatePatient';
 import Home from './components/Home/Home';
 import Navbar from './components/NavBar/NavBar';
 import Login from './authentication/Login';
+import SignUp from './authentication/SignUp';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('auth_token')));
@@ -42,7 +43,10 @@ function App() {
             <Route path="/createPatient" element={<CreatePatient />} />
           </Routes>
         ) : (
-          <Login onLogin={handleLogin} />
+          <Routes>
+            <Route path="/" element = {<Login onLogin={handleLogin}/>} />
+            <Route path="/signup" element = {<SignUp onSignUp={handleLogin}/>} />
+          </Routes>
         )}
       </Router>
     </>

@@ -31,6 +31,18 @@ INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
     (3, "2023-05-12","16:00:00", "16:30:00", "available")
 ;
 
+INSERT INTO Appointment(doctorID, patientID, date, startTime, endTime, status)
+VALUES
+    (1, 1, "2023-05-09", "08:00:00", "08:30:00", "scheduled"),
+    (2, 1, "2023-05-10", "08:30:00", "09:00:00", "scheduled"),
+    (3, 1, "2023-05-11", "09:00:00", "09:30:00", "scheduled"),
+    (1, 2, "2023-05-12", "09:30:00", "10:00:00", "scheduled"),
+    (2, 2, "2023-05-13", "10:00:00", "10:30:00", "scheduled"),
+    (3, 2, "2023-05-14", "10:30:00", "11:00:00", "scheduled"),
+    (1, 3, "2023-05-15", "11:00:00", "11:30:00", "scheduled"),
+    (2, 3, "2023-05-16", "11:30:00", "12:00:00", "scheduled"),
+    (3, 3, "2023-05-17", "12:00:00", "12:30:00", "scheduled");
+
 INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, patientID) VALUES
   ('clerk@hospital.com', 
   UNHEX('6c4f41c0f79f7d018087c335d82c9e4133d6df79531d4fece4ea4a71700148ec5425d00734959dfea70bc0b00a6bdc299340a8c6d845a7261dc34f4a3b41aba5'), 

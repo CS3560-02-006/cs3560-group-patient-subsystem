@@ -30,7 +30,7 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout }) => {
         <div className="dropdown-content">
         {isLoggedIn ? (
             <div className="dropdown-content">
-              <Link to=''>Update Account</Link>
+              <Link to='/updateAccount'>Update Account</Link>
               <div className="logout-link" onClick={onLogout}>Logout</div>
             </div>
           ) : (

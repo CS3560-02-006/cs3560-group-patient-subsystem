@@ -24,5 +24,6 @@ urlpatterns = [
     path('api/doctor/', views.doctorHandler),
     re_path(r'^api/patient(?:/(?P<patient_id>\d+))?/$', views.patientHandler),
     path('api/login/', views.loginHandler),
+    path('api/user/', views.handleCreate),
     re_path(r'^api/user(?:/(?P<user_id>\d+))?/$', views.userHandler),
 ]

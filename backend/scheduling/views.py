@@ -50,9 +50,15 @@ def patientHandler(request, patient_id=None):
     
 
 
+@api_view(['POST'])
+def handleCreate(request): 
+    print(request)
+    return createUser(request)
+
 
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-def userHandler(request, user_id=None):
+@api_authentication 
+def userHandler(request, user_id=None): 
     if request.method == 'GET':
         if user_id:
             user = getUser(user_id)
@@ -60,10 +66,8 @@ def userHandler(request, user_id=None):
                 return Response(user, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        else:
+        else: 
             return getUser(request)
-    elif request.method == 'POST':
-        return createUser(request)
     elif request.method == 'PATCH':
         return updateUser(request, user_id)
     elif request.method == 'DELETE':

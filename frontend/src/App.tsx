@@ -7,6 +7,7 @@ import Navbar from './components/NavBar/NavBar';
 import Login from './authentication/Login';
 import SignUp from './authentication/SignUp';
 import UpdateAccount from './authentication/UpdateAccount';
+import UpdatePatient from './components/CreatePatient/UpdatePatient';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('auth_token')));
@@ -42,6 +43,7 @@ function App() {
             <Route path="/" element={<Home userDetails={userDetails}/>} />
             <Route path="/createAppointment/" element={<CreateAppointment />} />
             <Route path="/createPatient" element={<CreatePatient />} />
+            <Route path="/updatePatient" element={<UpdatePatient userDetails={userDetails} />} />
             <Route path="/updateAccount" element={<UpdateAccount onUpdate={handleLogin} userDetails={userDetails} onDelete={handleLogout} />} />
           </Routes>
         ) : (

@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import {Patient} from '../../types/Patient';
 import { getAuthHeaders } from '../../utils/api';
 import './patient.css';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePatient = () => {
+  const [error, setError] = useState<string>('');
   const [patient, setPatient] = useState<Patient>({
     patientID: 0,
     name: '',
@@ -19,6 +21,7 @@ const CreatePatient = () => {
       zipcode: ''
     }
   });
+  const navigate = useNavigate();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -64,15 +67,16 @@ const CreatePatient = () => {
   
       const responseData = await response.json();
       console.log(responseData);
-      // Do something with the responseData, e.g., show a success message or redirect the user
+      navigate("/")
     } catch (error) {
+      setError('Error while submitting patient record:');
       console.error('Error while submitting patient record:', error);
-      // Handle the error, e.g., show an error message to the user
     }
   };
 
   return (
     <div className='container'>
+      {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className='header'>Create Patient Record</div>
         <label>

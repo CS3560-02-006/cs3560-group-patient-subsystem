@@ -40,19 +40,22 @@ def createPatient(request):
     """
     Create a new patient
     """
-    name = request.data.get('name')
-    date_of_birth = request.data.get('dateOfBirth')
-    phone_number = request.data.get('phoneNumber')
-    insurance_provider = request.data.get('insuranceProvider')
-    policy_number = request.data.get('policyNumber')
+    def replace_empty_with_none(value):
+        return None if value == '' else value
+
+    name = replace_empty_with_none(request.data.get('name'))
+    date_of_birth = replace_empty_with_none(request.data.get('dateOfBirth'))
+    phone_number = replace_empty_with_none(request.data.get('phoneNumber'))
+    insurance_provider = replace_empty_with_none(request.data.get('insuranceProvider'))
+    policy_number = replace_empty_with_none(request.data.get('policyNumber'))
     address_data = request.data.get('address')
 
     if address_data:
-        street = address_data.get('street')
-        apt = address_data.get('apt')
-        city = address_data.get('city')
-        state = address_data.get('state')
-        zipcode = address_data.get('zipcode')
+        street = replace_empty_with_none(address_data.get('street'))
+        apt = replace_empty_with_none(address_data.get('apt'))
+        city = replace_empty_with_none(address_data.get('city'))
+        state = replace_empty_with_none(address_data.get('state'))
+        zipcode = replace_empty_with_none(address_data.get('zipcode'))
     else:
         street = None
         apt = None
@@ -70,18 +73,22 @@ def createPatient(request):
 def updatePatient(request, patient_id):
     """
     Update a patient's details by ID
-    """
-    name = request.data.get('name')
-    date_of_birth = request.data.get('dateOfBirth')
-    phone_number = request.data.get('phoneNumber')
-    insurance_provider = request.data.get('insuranceProvider')
-    policy_number = request.data.get('policyNumber')
+    """ 
+    def replace_empty_with_none(value):
+        return None if value == '' else value
+
+    name = replace_empty_with_none(request.data.get('name'))
+    date_of_birth = replace_empty_with_none(request.data.get('dateOfBirth'))
+    phone_number = replace_empty_with_none(request.data.get('phoneNumber'))
+    insurance_provider = replace_empty_with_none(request.data.get('insuranceProvider'))
+    policy_number = replace_empty_with_none(request.data.get('policyNumber'))
     address_data = request.data.get('address', {})
-    street = address_data.get('street') if address_data else None
-    apt = address_data.get('apt') if address_data else None
-    city = address_data.get('city') if address_data else None
-    state = address_data.get('state') if address_data else None
-    zipcode = address_data.get('zipcode') if address_data else None
+
+    street = replace_empty_with_none(address_data.get('street')) if address_data else None
+    apt = replace_empty_with_none(address_data.get('apt')) if address_data else None
+    city = replace_empty_with_none(address_data.get('city')) if address_data else None
+    state = replace_empty_with_none(address_data.get('state')) if address_data else None
+    zipcode = replace_empty_with_none(address_data.get('zipcode')) if address_data else None
 
     update_fields = {}
     if name:
@@ -118,8 +125,15 @@ def deletePatient(request, patient_id):
     """
     Delete a patient by ID
     """
-    print(id)
     with connection.cursor() as cursor:
+        # Update all appointments associated with the patient to have a null patientID and status "available"
+        cursor.execute("UPDATE Appointment SET patientID=NULL, status='available' WHERE patientID=%s", [patient_id])
+        appointment_rows_affected = cursor.rowcount
+
+        # Delete the user record associated with the patient
+        cursor.execute("DELETE FROM User WHERE patientID=%s", [patient_id])
+        user_rows_affected = cursor.rowcount
+
         # Delete the address record(s) associated with the patient
         cursor.execute("DELETE FROM Address WHERE patientID=%s", [patient_id])
         address_rows_affected = cursor.rowcount
@@ -129,7 +143,7 @@ def deletePatient(request, patient_id):
         patient_rows_affected = cursor.rowcount
 
     # Check if any records were affected
-    if address_rows_affected > 0 or patient_rows_affected > 0:
+    if appointment_rows_affected > 0 or user_rows_affected > 0 or address_rows_affected > 0 or patient_rows_affected > 0:
         return Response(status=status.HTTP_204_NO_CONTENT)
     else:
         return Response(status=status.HTTP_404_NOT_FOUND)

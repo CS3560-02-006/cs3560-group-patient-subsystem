@@ -44,7 +44,7 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout, userDetails }) => {
                 {userDetails.userType === "clerk" && (
                   <Link to="/createPatient">Create Patient Record</Link>
                 )}
-                <Link to="">Update Patient Record</Link>
+                <Link to="/updatePatient">Update Patient Record</Link>
               </div>
             </div>
           </>
@@ -58,9 +58,7 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout, userDetails }) => {
             {isLoggedIn ? (
               <div className="dropdown-content">
                 <Link to="/updateAccount">Update Account</Link>
-                <div className="logout-link" onClick={onLogout}>
-                  Logout
-                </div>
+                <Link to="" onClick={onLogout}>Logout</Link>
               </div>
             ) : (
               <div className="dropdown-content">

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Doctor } from '../types/Doctor';
 import { Appointment } from '../types/Appointment';
+import { ErrorResponse, fetchPatients } from '../utils/api';
 import AppointmentSelector from './AppointmentSelector';
 import AppointmentMiniCard from './AppointmentMiniCard';
 import { fetchAvailableDoctors } from '../utils/api';
-import Padded from '../layout/Padded';
 //UI functionality for creating a new appointment
 const CreateAppointment = () => {
     const [doctorList, setDoctorList] = useState<Doctor[]>([]);
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
     const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null)
     const [description, setDescription] = useState<string>("");
+    const [error, setError] = useState<ErrorResponse | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -57,9 +58,10 @@ const CreateAppointment = () => {
     useEffect(() => {
         const doFetch = async () => {
             setDoctorList([]);
-            const result = await fetchAvailableDoctors();
+            const pDoctors = fetchAvailableDoctors();
+            const pPatients = fetchPatients();
+            
             if (!ignore) {
-                console.log(result);
                 setDoctorList(result);
                 setActiveDoctor(result[0]);
             }

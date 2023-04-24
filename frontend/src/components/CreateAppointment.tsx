@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Doctor } from '../types/Doctor';
 import { Appointment } from '../types/Appointment';
 import { ErrorResponse, fetchPatients } from '../utils/api';
 import AppointmentSelector from './AppointmentSelector';
 import AppointmentMiniCard from './AppointmentMiniCard';
 import { fetchAvailableDoctors } from '../utils/api';
+import UserContext from '../authentication/context';
+import { Patient } from '../types/Patient';
+import PatientCard from './PatientCard';
 //UI functionality for creating a new appointment
+
 const CreateAppointment = () => {
     const [doctorList, setDoctorList] = useState<Doctor[]>([]);
+    const [patientList, setPatientList] = useState<Patient[]>([]);
+    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
     const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null)
     const [description, setDescription] = useState<string>("");
     const [error, setError] = useState<ErrorResponse | null>(null);
+    const context = useContext(UserContext);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -58,12 +65,24 @@ const CreateAppointment = () => {
     useEffect(() => {
         const doFetch = async () => {
             setDoctorList([]);
-            const pDoctors = fetchAvailableDoctors();
-            const pPatients = fetchPatients();
+            setPatientList([]);
+
             
             if (!ignore) {
-                setDoctorList(result);
-                setActiveDoctor(result[0]);
+              try {
+              const pDoctors = await fetchAvailableDoctors();
+              
+              if (context?.state.userDetails.userType === "clerk") {
+                const pPatients = await fetchPatients();
+                setPatientList(pPatients)
+              }
+                setDoctorList(pDoctors);
+                setActiveDoctor(pDoctors[0]);
+              } catch (e) {
+                if (e instanceof Error) {
+                  setError({error: e.message})
+                }
+              }
             }
         }
 
@@ -72,9 +91,12 @@ const CreateAppointment = () => {
         return () => {
             ignore = true;
         }
-    }, [])
+    }, [context?.state.userDetails.userType])
 
-    const selectedComponent = selectedAppointment ? (
+    if (error) {
+      return <div>{error.error}</div>
+    }
+    const selectedDoctorComponent = selectedAppointment ? (
         <div className="bg-white rounded-lg p-4 mb-4">
           <p className="mb-2">Selected appointment:</p>
           <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
@@ -101,13 +123,26 @@ const CreateAppointment = () => {
                     required>
                 </textarea>
             </fieldset>
-          {selectedComponent}
           <div className="flex justify-between">
             <button className="px-4 py-2 rounded-lg bg-blue-600 text-white" type='submit'>Submit</button>
             <button className="px-4 py-2 rounded-lg bg-red-600 text-white" type='button' onClick={() => {}}>Cancel</button>
           </div>
         </> ) : null
-      
+
+
+      const selectPatientField = (
+        <div>
+          {patientList.map(patient => <PatientCard key={patient.patientID} patient={patient} setSelectedPatient={setSelectedPatient}/>)}
+        </div>
+      )
+
+      const selectPatientComponent = selectedPatient ? (
+        <div className="bg-white rounded-lg p-4 mb-4">
+          <p className="mb-2">Selected patient::</p>
+          <PatientCard patient={selectedPatient} setSelectedPatient={setSelectedPatient} />
+        </div>
+      ) : <></>
+
       return (
         <div className="min-h-screen flex flex-col justify-start bg-gray-100">
         <div className="w-full flex justify-center py-12">
@@ -120,6 +155,9 @@ const CreateAppointment = () => {
               </select>
             </fieldset>
             {activeDoctor && appointmentField}
+            {patientList.length && selectPatientField}
+            {selectedDoctorComponent}
+            {selectPatientComponent}
           </form>
           </div>
         </div>

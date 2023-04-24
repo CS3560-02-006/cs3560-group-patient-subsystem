@@ -1,5 +1,5 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import CreateAppointment from './components/CreateAppointment';
 import CreatePatient from './components/CreatePatient/CreatePatient';
 import Home from './components/Home/Home';
@@ -8,6 +8,8 @@ import Login from './authentication/Login';
 import SignUp from './authentication/SignUp';
 import UpdateAccount from './authentication/UpdateAccount';
 import UpdatePatient from './components/CreatePatient/UpdatePatient';
+import UserContext from "./authentication/context"
+import { initialState, reducer } from './reducer/reducer';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(Boolean(localStorage.getItem('auth_token')));
@@ -17,7 +19,8 @@ function App() {
     userType: localStorage.getItem('user_type') || '',
     patientID: localStorage.getItem('patient_id') || '',
   });
-  
+
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleLogin = (token: string, userID: string, email: string, userType: string, patientID: string) => {
     localStorage.setItem('auth_token', token);
@@ -27,6 +30,7 @@ function App() {
     localStorage.setItem('patient_id', patientID);
     setIsLoggedIn(true);
     setUserDetails({ userID, email, userType, patientID });
+    dispatch({type: "userDetails", payload: {userID, email, userType, patientID}})
   };
 
   const handleLogout = () => {
@@ -36,23 +40,25 @@ function App() {
 
   return (
     <>
-      <Router>
-        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} userDetails={userDetails}/>
-        {isLoggedIn ? (
-          <Routes>
-            <Route path="/" element={<Home userDetails={userDetails}/>} />
-            <Route path="/createAppointment/" element={<CreateAppointment />} />
-            <Route path="/createPatient" element={<CreatePatient />} />
-            <Route path="/updatePatient" element={<UpdatePatient userDetails={userDetails} />} />
-            <Route path="/updateAccount" element={<UpdateAccount onUpdate={handleLogin} userDetails={userDetails} onDelete={handleLogout} />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/" element = {<Login onLogin={handleLogin}/>} />
-            <Route path="/signup" element = {<SignUp onSignUp={handleLogin}/>} />
-          </Routes>
-        )}
-      </Router>
+      <UserContext.Provider value={{state, dispatch}}>
+        <Router>
+          <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} userDetails={userDetails}/>
+          {isLoggedIn ? (
+            <Routes>
+              <Route path="/" element={<Home userDetails={userDetails}/>} />
+              <Route path="/createAppointment/" element={<CreateAppointment />} />
+              <Route path="/createPatient" element={<CreatePatient />} />
+              <Route path="/updatePatient" element={<UpdatePatient userDetails={userDetails} />} />
+              <Route path="/updateAccount" element={<UpdateAccount onUpdate={handleLogin} userDetails={userDetails} onDelete={handleLogout} />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="/" element = {<Login onLogin={handleLogin}/>} />
+              <Route path="/signup" element = {<SignUp onSignUp={handleLogin}/>} />
+            </Routes>
+          )}
+        </Router>
+      </UserContext.Provider>
     </>
   );
 }

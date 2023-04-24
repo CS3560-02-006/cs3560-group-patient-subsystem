@@ -36,7 +36,7 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout}/>
+        <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} userDetails={userDetails}/>
         {isLoggedIn ? (
           <Routes>
             <Route path="/" element={<Home userDetails={userDetails}/>} />

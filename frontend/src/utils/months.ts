@@ -1,24 +1,17 @@
 import { Appointment } from "../types/Appointment";
-import MonthGroup, { getMonthFromNumber } from "../types/MonthGroup";
+import { MonthGroup } from "../types/MonthGroup";
+import { getMonthFromNumber } from "../types/MonthGroup";
 
 
 export const createGroups = (appointments: Appointment[]): MonthGroup[] => {
     console.log("createGroups", appointments)
-    const groups: MonthGroup[] = [{
-        month: getMonthFromNumber(appointments[0].startTime.getMonth()),
-        appointments: [],
-    }];
+    let groups: MonthGroup[] = Array(12);
+    for (let i = 0; i < 12; i++ ) {
+        groups.push(new MonthGroup(getMonthFromNumber(i + 1)))
+    }
 
     appointments.forEach((appointment) => {
-        const m = getMonthFromNumber(appointment.startTime.getMonth())
-        if (m === groups[groups.length - 1].month) {
-            groups[groups.length - 1].appointments.push(appointment)
-        } else {
-            groups.push({
-                month: m,
-                appointments: [appointment],
-            })
-        }
+        groups[appointment.startTime.getMonth()].pushAppointment(appointment.startTime.getDay(), appointment);
     })
 
     return groups;

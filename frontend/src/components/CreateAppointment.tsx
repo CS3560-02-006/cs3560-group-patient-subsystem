@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Doctor } from '../types/Doctor';
 import { Appointment } from '../types/Appointment';
-import { ErrorResponse, fetchPatients } from '../utils/api';
+import { ErrorResponse, fetchPatients, submitCreateAppointment } from '../utils/api';
 import AppointmentSelector from './AppointmentSelector';
 import AppointmentMiniCard from './AppointmentMiniCard';
 import { fetchAvailableDoctors } from '../utils/api';
@@ -22,17 +22,35 @@ const CreateAppointment = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        console.log(
-            "not implemented"
-        );
-        // let response = await fetch(`http://:8000/appointment/`, {
-        //     method: "POST",
-        //     headers: {
-        //         'Content-Type' : 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //     })
-        // })
+
+        if (!context?.state.userDetails) {
+          console.error("no context");
+          return;
+        }
+        const { userType, patientID } = context?.state.userDetails;
+        if (userType === "clerk" && !selectedPatient) {
+          console.error("submit with no patient");
+        }
+
+        if (!activeDoctor) {
+          console.error("submit with no doctor set");
+        }
+
+        if (!selectedAppointment) {
+          console.error("submit with no appointment selected");
+        }
+
+        const resp = await submitCreateAppointment({
+          description: description,
+          patientID: userType === "patient" ? parseInt(patientID, 10) : (selectedPatient as Patient).patientID,
+          doctorID: (activeDoctor as Doctor).doctorID,
+          appointmentID: (selectedAppointment as Appointment).id,
+          status: "scheduled",
+        })
+
+        if (!resp) {
+          console.error("submit with no appointment selected");
+        }
     }
 
     const handleSetDoctor = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -123,10 +141,6 @@ const CreateAppointment = () => {
                     required>
                 </textarea>
             </fieldset>
-          <div className="flex justify-between">
-            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white" type='submit'>Submit</button>
-            <button className="px-4 py-2 rounded-lg bg-red-600 text-white" type='button' onClick={() => {}}>Cancel</button>
-          </div>
         </> ) : null
 
 
@@ -158,6 +172,10 @@ const CreateAppointment = () => {
             {patientList.length && selectPatientField}
             {selectedDoctorComponent}
             {selectPatientComponent}
+          <div className="flex justify-between">
+            <button className="px-4 py-2 rounded-lg bg-blue-600 text-white" type='submit'>Submit</button>
+            <button className="px-4 py-2 rounded-lg bg-red-600 text-white" type='button' onClick={() => {}}>Cancel</button>
+          </div>
           </form>
           </div>
         </div>

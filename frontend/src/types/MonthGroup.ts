@@ -24,8 +24,22 @@ export const getMonthFromNumber = (month: number): string => {
 }
 
 
-type ValueOf<T> = T[keyof T];
-export default interface MonthGroup { 
-    month: ValueOf<typeof month_names>,
-    appointments: Appointment[],
- };
+
+ export class MonthGroup {
+    month: string;
+    appointments: Appointment[][];
+
+    constructor(month: string) {
+        this.month = month;
+        this.appointments = Array(31);
+        this.appointments.fill([]);
+    }
+
+    pushAppointment(day: number, appointment: Appointment) {
+        this.appointments[day].push(appointment);
+    }
+
+    getDayAppointments(day: number): Appointment[] {
+        return this.appointments[day];
+    }
+ }

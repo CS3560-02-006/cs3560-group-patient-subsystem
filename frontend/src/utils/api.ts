@@ -1,3 +1,4 @@
+import { CreateAppointmentRequest } from "../types/CreateAppointmentRequest";
 import { Doctor } from "../types/Doctor";
 import { Patient } from "../types/Patient"
 import { dateFromSQL } from "./sql";
@@ -55,10 +56,21 @@ const getAuthHeaders = () => {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     };
-  };
+};
+
+const submitCreateAppointment = async (req: CreateAppointmentRequest): Promise<boolean> => {
+    const resp = await fetch('/api/createAppointment', {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(req),
+    })
+
+    return resp.ok;
+}
 
 export {
     fetchAvailableDoctors,
     fetchPatients,
     getAuthHeaders,
+    submitCreateAppointment,
 }

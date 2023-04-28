@@ -109,34 +109,122 @@ Use appointmentsdb;
 
 INSERT INTO Doctor(name, dateofBirth, specialty)
 	VALUES
-    ("Robert Dorf", "1980-01-01", "Oncologist"),
+    ("Adams Thampson", "1973-03-03", "Oncologist"),
+    ("Bill Gato", "1975-05-21", "Endocrinologist"),
+    ("Charlie Sam", "1970-01-15", "Nephrologist"),
+    ("Daniel Cruz", "1984-03-12", "Cardiologist"),
+    ("David Zarner", "1978-12-02", "Neurologist"),
+    ("Donald Hannoun", "1970-11-19", "Urologist"),
+    ("Erik Lum", "1981-04-04", "Nephrologist"),
+    ("Ernest Agatstein", "1965-02-23", "Urologist"),
+    ("George Abdelsayed", "1971-07-12", "Urologist"),
+    ("Gregg Fonarow", "1980-11-13", "Cardiologist"),
+    ("Henry Honda", "1982-02-02", "Cardiologist"),
+    ("Iman Abdalla", "1962-09-02", "Oncologist"),
+    ("Jay Butler", "1970-03-20", "Nephrologist"),
     ("Jessica James", "1965-03-09", "Cardiologist"),
-    ("Bill Gato", "1975-05-21", "Endocrinologist")
+    ("Jose Suarez", "1977-10-07", "Cardiologist"),
+    ("Linda Warner", "1969-01-03", "Oncologist"),
+    ("Melina Smith", "1980-08-12", "Endocrinologist"),
+    ("Michael Hyman", "1962-03-06", "Urologist"),
+    ("Michelle Randolph", "1977-02-10", "Cardiologist"),
+    ("Robert Dorf", "1980-01-01", "Oncologist"),
+    ("Robert Siegel", "1964-06-18", "Cardiologist"),
+    ("Richard Zajac", "1970-11-18", "Oncologist"),
+    ("Samuel Chung", "1980-10-09", "Oncologist"),
+    ("Sharon Adler", "1966-06-21", "Nephrologist"),
+    ("Siamak Daneshmand", "1968-09-17", "Urologist")
 ;
 
 INSERT INTO Patient(name, dateOfBirth, phoneNumber, insuranceProvider, policyNumber)
 	VALUES
-    ("John Doe", "1985-01-01", "123-456-7890", "Aetna", "A123456"),
+    ("Anna Rodriguez", "1977-07-14", "122-222-3636", "Blue Cross", "B110220"),
+    ("Annie Williams", "1958-01-26", "222-235-2626", "Blue Cross", "B111111"),
+    ("Anet Brown", "1960-02-12", "212-510-10100", "Cigna", "C101230"),
+    ("Bob Johnson", "1990-11-30", "222-333-4444", "Cigna", "C246810"),
+    ("Bruce Jackson", "1953-11-12", "111-123-3214", "Blue Cross", "B101213"),
+    ("Eric Castleman", "1989-07-18", "123-555-5151", "Cigna", "C112211"),
+    ("Elena Garcia", "1962-04-05", "424-444-1112", "Medical", "M202201"),
+    ("Florian Rader", "1990-02-04", "122-555-5157", "Kaiser", "K155123"),
+    ("Jack Smith", "1991-06-20", "424-111-1441", "Blue Cross", "B023456"),
     ("Jane Smith", "1972-05-13", "555-555-5555", "Blue Cross", "B987654"),
-    ("Bob Johnson", "1990-11-30", "222-333-4444", "Cigna", "C246810")
+    ("Jeniffer Goodman", "1951-09-28", "555-848-8191", "Medical", "M812345"),
+    ("Jessie Hernandez", "1987-07-17", "551-626-1010", "Cigna", "C222323"),
+    ("Jhon Davis", "1968-08-22", "111-818-8152", "Kaiser", "K098915"),
+    ("John Doe", "1985-01-01", "123-456-7890", "Aetna", "A123456"),
+    ("Lia Muler", "1988-12-15", "123-505-5050", "Aetna", "A808915"),
+    ("Lina Right", "1988-12-15", "818-222-2221", "Aetna", "A111113"),
+    ("Lucy Adams", "1985-02-02", "818-212-7878", "Medical", "M125689"),
+    ("Mark Urman", "1957-07-07", "424-515-5252", "Kaiser", "K012341"),
+    ("Matthew Budoff", "1966-05-15", "213-213-2124", "Medical", "M111234"),
+    ("Michele Hamilton", "1950-10-22", "818-919-9191", "Kaiser", "K212356"),
+    ("Mehran Khorsandi", "1980-10-19", "818-111-1111", "Aetna", "A222333"),
+    ("Philip Adams", "1960-01-12", "213-888-8188", "Medical", "M333123"),
+    ("Richard Wright", "1955-06-16", "213-889-8447", "Blue Cross", "B221212"),
+    ("Sam Williams", "1977-08-19", "424-999-9191", "Aetna", "A021222"),
+    ("Steve Park", "1964-05-05", "213-717-7117", "Cigna", "C333515")  
 ;
 
 INSERT INTO Address(patientID, street, apt, city, state, zipcode)
 	VALUES
     (1, "123 Main St", NULL, "Anytown", "CA", "12345"),
-    (2, "456 Park Ave", "Apt 101", "Smallville", "NY", "67890"),
-    (3, "789 Elm St", NULL, "Big City", "IL", "54321")
+    (2, "456 Park Ave", "Apt 101", "Smallville", "CA", "67890"),
+    (3, "789 Elm St", NULL, "Big City", "CA", "54321"),
+    (4, "722 West Elm St", NULL, "Glendale", "CA", "91202"),
+    (5, "111 Allen Ave", NULL, "Sun Valley", "CA", "91222"),
+    (6, "4500 West Adams St", "Apt 46", "Van Nuys", "CA", "91402"),
+    (7, "220 Alameda Ave", NULL, "Glendale", "CA", "91206"),
+    (8, "1000 West Glenoaks Blvd", NULL, "Burbank", "CA", "91808"),
+    (9, "800 North Central Ave", "Apt 404", "Los Angeles", "CA", "91202"),
+    (10, "502 West Woodworth Ave", "Apt 101", "Los Angeles", "CA", "91001"),
+    (11, "1100 Pacific Ave", "Apt 2", "Pacadena", "CA", "91602"),
+    (12, "820 North Jackson St", NULL, "Pomona", "CA", "91209"),
+    (13, "924 Paradise Ave", "Apt 12", "Van Nuys", "CA", "91403"),
+    (14, "9000 Alameda Ave", "Apt 1", "Los angeles", "CA", "91001"),
+    (15, "1200 West Wilson Ave", NULL, "Pasadena", "CA", "91802"),
+    (16, "9251 Adams St", "Apt 200", "Pomona", "CA", "91505"),
+    (17, "1001 William Ave", NULL, "Burbank", "CA", "91405"),
+    (18, "4560 Anthony Blvd", NULL, "Los Angeles", "CA", "91588"),
+    (19, "500 West White St", "Apt 302", "Van Nuys", "CA", "91851"),
+    (20, "502 Elk St", NULL, "Panorama City", "CA", "91304"),
+    (21, "402 Chess St", "Apt 22", "Glendale", "CA", "91206"),
+    (22, "560 Brand Blvd", NULL, "Los Angeles", "CA", "92351"),
+    (23, "300 North Verdugo Ave", "Apt 405", "Panorama City", "CA", "92562"),
+    (24, "1001 East California Ave", NULL, "Arcadia", "CA", "91505"),
+    (25, "727 Beverly Hills Blvd", NULL, "Los Angeles", "CA", "91606")
 ;
 
 INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
-	VALUES
-    (1, "2023-05-09","12:30:00", "13:00:00", "available"),
-    (1, "2023-05-10","13:30:00", "14:00:00", "available"),
-    (2, "2023-05-10","11:00:00", "11:30:00", "available"),
-    (2, "2023-05-11","9:30:00", "10:00:00", "available"), 
-    (3, "2023-05-13","15:30:00", "16:00:00", "available"),
-    (3, "2023-05-12","16:00:00", "16:30:00", "available")
-;
+SELECT
+  doctorID,
+  date,
+  startTime,
+  ADDTIME(startTime, '00:30:00') AS endTime,
+  'available' AS status
+FROM (
+  SELECT
+    1 AS doctorID,
+    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
+    ADDTIME('08:00:00', SEC_TO_TIME((seq*1800))) AS startTime
+  FROM seq_0_to_30
+  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
+  UNION ALL
+  SELECT
+    2 AS doctorID,
+    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
+    ADDTIME('09:00:00', SEC_TO_TIME((seq*1800))) AS startTime
+  FROM seq_0_to_30
+  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
+  UNION ALL
+  SELECT
+    3 AS doctorID,
+    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
+    ADDTIME('10:00:00', SEC_TO_TIME((seq*1800))) AS startTime
+  FROM seq_0_to_30
+  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
+) AS appointments
+ORDER BY doctorID, date, startTime;
+
 
 INSERT INTO Appointment(doctorID, patientID, date, startTime, endTime, status)
 VALUES
@@ -163,3 +251,4 @@ INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, pa
   'patient', 
   1
 );
+

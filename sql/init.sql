@@ -194,36 +194,16 @@ INSERT INTO Address(patientID, street, apt, city, state, zipcode)
     (25, "727 Beverly Hills Blvd", NULL, "Los Angeles", "CA", "91606")
 ;
 
-INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
-SELECT
-  doctorID,
-  date,
-  startTime,
-  ADDTIME(startTime, '00:30:00') AS endTime,
-  'available' AS status
-FROM (
-  SELECT
-    1 AS doctorID,
-    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
-    ADDTIME('08:00:00', SEC_TO_TIME((seq*1800))) AS startTime
-  FROM seq_0_to_30
-  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
-  UNION ALL
-  SELECT
-    2 AS doctorID,
-    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
-    ADDTIME('09:00:00', SEC_TO_TIME((seq*1800))) AS startTime
-  FROM seq_0_to_30
-  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
-  UNION ALL
-  SELECT
-    3 AS doctorID,
-    DATE_ADD('2023-05-01', INTERVAL seq DAY) AS date,
-    ADDTIME('10:00:00', SEC_TO_TIME((seq*1800))) AS startTime
-  FROM seq_0_to_30
-  WHERE DATE_ADD('2023-05-01', INTERVAL seq DAY) <= '2023-05-31'
-) AS appointments
-ORDER BY doctorID, date, startTime;
+-- INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
+-- 	VALUES
+--     (1, "2023-05-09","12:30:00", "13:00:00", "available"),
+--     (1, "2023-05-10","13:30:00", "14:00:00", "available"),
+--     (2, "2023-05-10","11:00:00", "11:30:00", "available"),
+--     (2, "2023-05-11","9:30:00", "10:00:00", "available"), 
+--     (3, "2023-05-13","15:30:00", "16:00:00", "available"),
+--     (3, "2023-05-12","16:00:00", "16:30:00", "available")
+-- ;
+
 
 
 INSERT INTO Appointment(doctorID, patientID, date, startTime, endTime, status)
@@ -252,3 +232,34 @@ INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, pa
   1
 );
 
+
+DROP PROCEDURE IF EXISTS generateAppointments;
+DELIMITER //
+CREATE PROCEDURE generateAppointments()
+BEGIN
+  DECLARE currentDate DATE DEFAULT '2023-05-08';
+  DECLARE currentDoctorID INT DEFAULT 1;
+  DECLARE appointmentStartTime TIME;
+  
+  WHILE currentDate <= '2023-05-31' DO
+    WHILE currentDoctorID <= 3 DO
+      SET appointmentStartTime = '08:00:00';
+      
+      WHILE TIME_TO_SEC(appointmentStartTime) < TIME_TO_SEC('20:00:00') DO
+        INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
+        VALUES
+          (currentDoctorID, currentDate, appointmentStartTime, ADDTIME(appointmentStartTime, '00:30:00'), 'available');
+          
+        SET appointmentStartTime = ADDTIME(appointmentStartTime, '00:30:00');
+      END WHILE;
+      
+      SET currentDoctorID = currentDoctorID + 1;
+    END WHILE;
+    SET currentDoctorID = 1;
+    SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+  END WHILE;
+END;
+//
+DELIMITER ;
+
+CALL generateAppointments();

@@ -1,8 +1,21 @@
+import { CreateAppointmentRequest } from "../types/CreateAppointmentRequest";
+import { Doctor } from "../types/Doctor";
+import { Patient } from "../types/Patient"
 import { dateFromSQL } from "./sql";
 
 const API_PATH = "http://localhost:8000/api"
 
-const fetchAvailableDoctors = async () => {
+export interface ErrorResponse {
+    error: string;
+}
+
+class APIError extends Error {
+    json(): ErrorResponse {
+        return { error: this.message }
+    }
+}
+
+const fetchAvailableDoctors = async (): Promise<Doctor[]> => {
     const resp = await fetch(API_PATH+"/doctor", {
         headers: getAuthHeaders()
     });
@@ -20,12 +33,22 @@ const fetchAvailableDoctors = async () => {
         })
 
         return json;
+    } else {
+        throw new APIError("bad response: " + resp.ok);
+    }
+};
+
+const fetchPatients = async (): Promise<Patient[]> => {
+    const resp = await fetch('/api/patient', {
+        headers: getAuthHeaders(),
+    })
+
+    if (!resp.ok) {
+        throw new APIError("Unable to fetch: " + resp.ok)
     }
 
-    return {
-        "error": "Unable to fetch doctors",
-    };
-};
+    return await resp.json();
+}
 
 const getAuthHeaders = () => {
     const token = localStorage.getItem('auth_token');
@@ -33,9 +56,21 @@ const getAuthHeaders = () => {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     };
-  };
+};
+
+const submitCreateAppointment = async (req: CreateAppointmentRequest): Promise<boolean> => {
+    const resp = await fetch('/api/createAppointment', {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+        body: JSON.stringify(req),
+    })
+
+    return resp.ok;
+}
 
 export {
     fetchAvailableDoctors,
+    fetchPatients,
     getAuthHeaders,
+    submitCreateAppointment,
 }

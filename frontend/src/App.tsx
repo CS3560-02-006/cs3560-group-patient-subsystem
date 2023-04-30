@@ -1,6 +1,6 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import { useReducer, useState } from 'react';
-import CreateAppointment from './components/CreateAppointment';
+import CreateAppointment from './components/Appointment/CreateAppointment';
 import CreatePatient from './components/CreatePatient/CreatePatient';
 import Home from './components/Home/Home';
 import Navbar from './components/NavBar/NavBar';
@@ -46,7 +46,7 @@ function App() {
           {isLoggedIn ? (
             <Routes>
               <Route path="/" element={<Home userDetails={userDetails}/>} />
-              <Route path="/createAppointment/" element={<CreateAppointment />} />
+              <Route path="/createAppointment/" element={<CreateAppointment userDetails={userDetails} />} />
               <Route path="/createPatient" element={<CreatePatient />} />
               <Route path="/updatePatient" element={<UpdatePatient userDetails={userDetails} />} />
               <Route path="/updateAccount" element={<UpdateAccount onUpdate={handleLogin} userDetails={userDetails} onDelete={handleLogout} />} />

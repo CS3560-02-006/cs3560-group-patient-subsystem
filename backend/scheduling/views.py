@@ -17,19 +17,19 @@ def loginHandler(request):
 # Routes to appropriate controls for appointments depending on http method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
 # @api_authentication
-def appointmentHandler(request):
+def appointmentHandler(request, appointment_id=None):
     if request.method == 'GET':
         return getAppointments(request)
     if request.method == 'POST':
         return createAppointment(request)
     if request.method == 'PATCH':
-        return updateAppointment(request)
+        return updateAppointment(request, appointment_id)
     if request.method == 'DELETE':
         return deleteAppointment(request)
 
 # Routes to appropriate controls for doctors depending on http method
 @api_view(['GET'])
-@api_authentication
+# @api_authentication 
 def doctorHandler(request):
     return getDoctors(request)
     

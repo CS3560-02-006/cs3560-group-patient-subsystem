@@ -14,14 +14,12 @@ def getDoctors(request, doctor_id=None):
                 FROM Doctor
                 LEFT JOIN Appointment ON Doctor.doctorID = Appointment.doctorID
                 WHERE Doctor.doctorID = %s
-                AND Appointment.status = 'available'
             """, [doctor_id])
         else:
             cursor.execute("""
                 SELECT Doctor.*, Appointment.*
                 FROM Doctor
                 LEFT JOIN Appointment ON Doctor.doctorID = Appointment.doctorID
-                AND Appointment.status = 'available'
             """)
 
         result = [dict(zip([column[0] for column in cursor.description], row)) for row in cursor.fetchall()]

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserDetails } from '../../types/UserDetails';
 import './Home.css'
+import { useNavigate } from 'react-router-dom';
 
 interface Appointment {
   appointmentID: string;
@@ -20,6 +21,7 @@ interface Props {
 
 const Home: React.FC<Props> = ({ userDetails }) => {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/appointment')
@@ -38,6 +40,10 @@ const Home: React.FC<Props> = ({ userDetails }) => {
         console.error('Error fetching appointments:', error);
       });
   }, [userDetails]);
+
+  const handleUpdate = (appointment: Appointment) => {
+    navigate('/updateAppointment', { state: { appointment } });
+  };
 
   return (
     <div>
@@ -66,8 +72,8 @@ const Home: React.FC<Props> = ({ userDetails }) => {
               <td>{appointment.startTime}</td>
               <td>{appointment.endTime}</td>
               <td>
-                <button>Update</button>
-                <button>Cancel</button>
+                <button onClick={() => handleUpdate(appointment)}>Update</button>
+                <button >Cancel</button>
               </td>
             </tr>
           ))}

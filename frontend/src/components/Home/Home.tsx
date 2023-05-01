@@ -5,7 +5,9 @@ import './Home.css'
 interface Appointment {
   appointmentID: string;
   doctorID: string;
+  doctorName: string;
   patientID: number;
+  patientName: string;
   date: string;
   startTime: string;
   endTime: string;
@@ -44,7 +46,9 @@ const Home: React.FC<Props> = ({ userDetails }) => {
         <thead>
           <tr>
             <th>Doctor</th>
-            <th>Patient</th>
+            {userDetails.userType === 'clerk' && (
+                <th>Patient</th>
+              )}
             <th>Date</th>
             <th>Start Time</th>
             <th>End Time</th>
@@ -54,8 +58,10 @@ const Home: React.FC<Props> = ({ userDetails }) => {
         <tbody>
           {appointments.map((appointment, index) => (
             <tr key={index}>
-              <td>{appointment.doctorID}</td>
-              <td>{appointment.patientID}</td>
+              <td>{appointment.doctorName}</td>
+              {userDetails.userType === 'clerk' && (
+                <td>{appointment.patientName}</td>
+              )}
               <td>{appointment.date}</td>
               <td>{appointment.startTime}</td>
               <td>{appointment.endTime}</td>

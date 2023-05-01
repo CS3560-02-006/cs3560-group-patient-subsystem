@@ -1,136 +1,135 @@
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 4px;
-  }
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 4px;
+}
 
-  button:hover{
-    cursor:pointer;
-  }
-  
+button:hover {
+  cursor: pointer;
+}
+
 form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
-  }
-  
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+}
+
 label {
-    display: grid;
-    grid-gap: 5px;
-  }
-  
+  display: grid;
+  grid-gap: 5px;
+}
+
 input {
-    padding: 5px;
-    font-size: 16px;
-  }
-  
+  padding: 5px;
+  font-size: 16px;
+}
+
 button {
-    padding: 10px;
-    background-color: #4a90e2; /* Change the background color */
-    color: #ffffff;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px; /* Add margin to the right of the button */
-  }
+  padding: 10px;
+  background-color: #4a90e2; /* Change the background color */
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px; /* Add margin to the right of the button */
+}
 
 .submit-button {
-    padding: 10px;
-    background-color: #4a90e2;
-    color: #ffffff;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 10px;
-  }
-  
-  /* Add this new style */
+  padding: 10px;
+  background-color: #4a90e2;
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+/* Add this new style */
 button:last-child {
-    margin-right: 0; /* Remove the margin from the last button */
-  }
-  
+  margin-right: 0; /* Remove the margin from the last button */
+}
+
 button:hover {
-    background-color: #1c86ee;
-  }
-  
+  background-color: #1c86ee;
+}
+
 .divider {
-    grid-column: 1 / 3;
-    height: 1px;
-    background-color: #cccccc;
-    margin: 20px 0;
-  }
-  
+  grid-column: 1 / 3;
+  height: 1px;
+  background-color: #cccccc;
+  margin: 20px 0;
+}
+
 .header {
-    grid-column: 1 / 3;
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
+  grid-column: 1 / 3;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
 .button-container {
-    grid-column: 1 / 3;
-    display: flex;
-    justify-content: space-between;
-  }
-  
+  grid-column: 1 / 3;
+  display: flex;
+  justify-content: space-between;
+}
+
 .cancel-button {
-    background-color: #ccc;
-    color: #333;
-  }
-  
+  background-color: #ccc;
+  color: #333;
+}
+
 .cancel-button:hover {
-    background-color: #bbb;
-  }
+  background-color: #bbb;
+}
 
-  .delete-confirm-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .delete-confirm-box {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.delete-confirm-box {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-  .delete-patient-button {
-    background-color: red;
-    color: white;
-    margin-top: 10px;
-  }
-  
-  .confirm-delete-buttons {
-    display: flex;
-    justify-content: space-around;
-  }
+.delete-patient-button {
+  background-color: red;
+  color: white;
+  margin-top: 10px;
+}
 
-  .confirm-delete-buttons button {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 5px;
-  }
-  
-  .confirm-delete-buttons button:hover {
-    background-color: #0056b3;
-  }
+.confirm-delete-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.confirm-delete-buttons button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 5px;
+}
+
+.confirm-delete-buttons button:hover {
+  background-color: #0056b3;
+}

@@ -11,7 +11,8 @@ def getAppointments(request):
             JOIN Patient p ON a.patientID = p.patientID
             JOIN Doctor d ON a.doctorID = d.doctorID
         """)
-        result = [dict(zip([column[0] for column in cursor.description], row)) for row in cursor.fetchall()]
+        result = [dict(zip([column[0] for column in cursor.description], row))
+                  for row in cursor.fetchall()]
 
     formatted_appointments = []
     for row in result:
@@ -31,15 +32,16 @@ def getAppointments(request):
     return Response(formatted_appointments)
 
 
-
 # Creates new appointment
 def createAppointment(request):
     # take request data
     # create new db entry
-    # return success 
+    # return success
     return Response(request.data)
 
 # updates appointment attributes
+
+
 def updateAppointment(request, appointment_id):
     patient_id = request.data.get('patientID')
     doctor_id = request.data.get('doctorID')
@@ -64,18 +66,19 @@ def updateAppointment(request, appointment_id):
 
     with connection.cursor() as cursor:
         if update_fields:
-            set_clause = ', '.join([f"{field}=%s" for field in update_fields.keys()])
+            set_clause = ', '.join(
+                [f"{field}=%s" for field in update_fields.keys()])
             set_values = list(update_fields.values())
             set_values.append(appointment_id)
-            cursor.execute(f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
+            cursor.execute(
+                f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
 
     return Response(3)
 
 
-
 # cancels existing appointment
 def deleteAppointment(request):
-    #find appointment in database
-    #delete element
-    #return response
+    # find appointment in database
+    # delete element
+    # return response
     return Response(request.data)

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Patient } from '../../types/Patient';
-import { UserDetails } from '../../types/UserDetails';
-import { getAuthHeaders } from '../../utils/api';
-import './patient.css';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Patient } from "../../types/Patient";
+import { UserDetails } from "../../types/UserDetails";
+import { getAuthHeaders } from "../../utils/api";
+import "./patient.css";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   userDetails: UserDetails;
@@ -12,30 +12,31 @@ interface Props {
 const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<number>(0);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
-  const areInputsDisabled = userDetails.userType === 'clerk' && selectedPatientId === 0;
+  const areInputsDisabled =
+    userDetails.userType === "clerk" && selectedPatientId === 0;
   const [patient, setPatient] = useState<Patient>({
     patientID: 0,
-    name: '',
+    name: "",
     dateOfBirth: new Date().toISOString().substr(0, 10),
-    phoneNumber: '',
-    insuranceProvider: '',
-    policyNumber: '',
+    phoneNumber: "",
+    insuranceProvider: "",
+    policyNumber: "",
     address: {
-      street: '',
-      apt: '',
-      city: '',
-      state: '',
-      zipcode: ''
-    }
+      street: "",
+      apt: "",
+      city: "",
+      state: "",
+      zipcode: "",
+    },
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch('/api/patient/', {
+        const response = await fetch("/api/patient/", {
           headers: getAuthHeaders(),
         });
 
@@ -46,29 +47,34 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
         const responseData = await response.json();
         setPatients(responseData);
 
-        if (userDetails.userType === 'patient') {
-          const patientData = responseData.find((p: Patient) => p.patientID.toLocaleString() === userDetails.patientID);
+        if (userDetails.userType === "patient") {
+          const patientData = responseData.find(
+            (p: Patient) =>
+              p.patientID.toLocaleString() === userDetails.patientID
+          );
           if (patientData) {
             setPatient(patientData);
           }
         }
       } catch (error) {
-        console.error('Error fetching patients:', error);
+        console.error("Error fetching patients:", error);
       }
     };
 
     fetchPatients();
   }, [userDetails]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setPatient((prevState:Patient)  => ({
+    setPatient((prevState: Patient) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleDateOfBirthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDateOfBirthChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const { value } = event.target;
     setPatient((prevState: Patient) => ({
       ...prevState,
@@ -78,20 +84,24 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
 
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setPatient((prevState:Patient) => ({
+    setPatient((prevState: Patient) => ({
       ...prevState,
       address: {
         ...prevState.address,
-        [name]: value
-      }
+        [name]: value,
+      },
     }));
   };
 
-  const handlePatientSelection = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handlePatientSelection = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     const selectedId = parseInt(event.target.value, 10);
     setSelectedPatientId(selectedId);
 
-    const selectedPatient = patients.find((patient) => patient.patientID === selectedId);
+    const selectedPatient = patients.find(
+      (patient) => patient.patientID === selectedId
+    );
     if (selectedPatient) {
       setPatient(selectedPatient);
     }
@@ -99,53 +109,52 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     try {
-      console.log(patient)
+      console.log(patient);
       const response = await fetch(`/api/patient/${patient.patientID}/`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: getAuthHeaders(),
-        body: JSON.stringify(patient)
+        body: JSON.stringify(patient),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
-  
+
       const responseData = await response.json();
       console.log(responseData);
-      navigate("/")
+      navigate("/");
     } catch (error) {
-      setError('Error while submitting patient record:');
-      console.error('Error while submitting patient record:', error);
+      setError("Error while submitting patient record:");
+      console.error("Error while submitting patient record:", error);
     }
   };
 
   const handleDelete = async () => {
-      try {
-        const response = await fetch(`/api/patient/${patient.patientID}/`, {
-          method: 'DELETE',
-          headers: getAuthHeaders(),
-        });
+    try {
+      const response = await fetch(`/api/patient/${patient.patientID}/`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-
-        navigate('/');
-      } catch (error) {
-        setError('Error while deleting patient record');
-        console.error('Error while deleting patient record:', error);
+      if (!response.ok) {
+        throw new Error(`HTTP error: ${response.status}`);
       }
-  };
 
+      navigate("/");
+    } catch (error) {
+      setError("Error while deleting patient record");
+      console.error("Error while deleting patient record:", error);
+    }
+  };
 
   return (
     <div className="container">
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="header">Update Patient Record</div>
-        {userDetails.userType === 'clerk' && (
+        {userDetails.userType === "clerk" && (
           <label>
             Select Patient:
             <select value={selectedPatientId} onChange={handlePatientSelection}>
@@ -160,55 +169,119 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
         )}
         <label>
           Name:
-          <input type="text" name="name" value={patient.name} onChange={handleChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="name"
+            value={patient.name}
+            onChange={handleChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Date of Birth:
-          <input type="date" name="dateOfBirth" value={patient.dateOfBirth} onChange={handleDateOfBirthChange} disabled={areInputsDisabled}/>
+          <input
+            type="date"
+            name="dateOfBirth"
+            value={patient.dateOfBirth}
+            onChange={handleDateOfBirthChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Insurance Provider:
-          <input type="text" name="insuranceProvider" value={patient.insuranceProvider} onChange={handleChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="insuranceProvider"
+            value={patient.insuranceProvider}
+            onChange={handleChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Policy Number:
-          <input type="text" name="policyNumber" value={patient.policyNumber} onChange={handleChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="policyNumber"
+            value={patient.policyNumber}
+            onChange={handleChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Phone Number:
-          <input type="text" name="phoneNumber" value={patient.phoneNumber} onChange={handleChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="phoneNumber"
+            value={patient.phoneNumber}
+            onChange={handleChange}
+            disabled={areInputsDisabled}
+          />
         </label>
-        <div className='divider'></div>
+        <div className="divider"></div>
         <label>
           Street:
-          <input type="text" name="street" value={patient.address.street} onChange={handleAddressChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="street"
+            value={patient.address.street}
+            onChange={handleAddressChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Apt:
-          <input type="text" name="apt" value={patient.address.apt} onChange={handleAddressChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="apt"
+            value={patient.address.apt}
+            onChange={handleAddressChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           City:
-          <input type="text" name="city" value={patient.address.city} onChange={handleAddressChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="city"
+            value={patient.address.city}
+            onChange={handleAddressChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           State:
-          <input type="text" name="state" value={patient.address.state} onChange={handleAddressChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="state"
+            value={patient.address.state}
+            onChange={handleAddressChange}
+            disabled={areInputsDisabled}
+          />
         </label>
         <label>
           Zipcode:
-          <input type="text" name="zipcode" value={patient.address.zipcode} onChange={handleAddressChange} disabled={areInputsDisabled}/>
+          <input
+            type="text"
+            name="zipcode"
+            value={patient.address.zipcode}
+            onChange={handleAddressChange}
+            disabled={areInputsDisabled}
+          />
         </label>
-        <div className='divider'></div>
+        <div className="divider"></div>
 
         <div className="container">
-          <button type="submit" className="submit-button" disabled={areInputsDisabled} >
+          <button
+            type="submit"
+            className="submit-button"
+            disabled={areInputsDisabled}
+          >
             Submit
           </button>
-          <button type="button" className="cancel-button" onClick={() => {}}>
+          <button type="button" className="cancel-button" onClick={() => navigate('/')}>
             Cancel
           </button>
-          {userDetails.userType === 'clerk' && (
+          {userDetails.userType === "clerk" && (
             <button
               type="button"
               className="delete-patient-button"

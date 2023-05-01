@@ -22,7 +22,8 @@ def getDoctors(request, doctor_id=None):
                 LEFT JOIN Appointment ON Doctor.doctorID = Appointment.doctorID
             """)
 
-        result = [dict(zip([column[0] for column in cursor.description], row)) for row in cursor.fetchall()]
+        result = [dict(zip([column[0] for column in cursor.description], row))
+                  for row in cursor.fetchall()]
 
     # Map the result to match the frontend interface
     doctors = {}

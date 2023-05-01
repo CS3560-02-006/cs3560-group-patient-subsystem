@@ -4,13 +4,13 @@ from rest_framework import status
 from rest_framework.response import Response
 from scheduling.controllers.appointments import getAppointments, createAppointment, updateAppointment, deleteAppointment
 from scheduling.controllers.patients import getPatients, createPatient, updatePatient, deletePatient
-from scheduling.controllers.doctors import  getDoctors
+from scheduling.controllers.doctors import getDoctors
 from scheduling.controllers.auth import getUser, createUser, updateUser, deleteUser, loginUser, getUser
 from .authentication import api_authentication
 
 
 @api_view(['POST'])
-def loginHandler(request): 
+def loginHandler(request):
     return loginUser(request)
 
 
@@ -28,11 +28,12 @@ def appointmentHandler(request, appointment_id=None):
         return deleteAppointment(request)
 
 # Routes to appropriate controls for doctors depending on http method
+
+
 @api_view(['GET'])
-# @api_authentication 
+# @api_authentication
 def doctorHandler(request):
     return getDoctors(request)
-    
 
 
 # Routes to appropriate controls for patients depending on http method
@@ -47,18 +48,17 @@ def patientHandler(request, patient_id=None):
         return updatePatient(request, patient_id)
     if request.method == 'DELETE':
         return deletePatient(request, patient_id)
-    
 
 
 @api_view(['POST'])
-def handleCreate(request): 
+def handleCreate(request):
     print(request)
     return createUser(request)
 
 
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-@api_authentication 
-def userHandler(request, user_id=None): 
+@api_authentication
+def userHandler(request, user_id=None):
     if request.method == 'GET':
         if user_id:
             user = getUser(user_id)
@@ -66,7 +66,7 @@ def userHandler(request, user_id=None):
                 return Response(user, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-        else: 
+        else:
             return getUser(request)
     elif request.method == 'PATCH':
         return updateUser(request, user_id)
@@ -76,5 +76,3 @@ def userHandler(request, user_id=None):
             return Response({"success": "User deleted"}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-
-

@@ -27,20 +27,24 @@ const CreateAppointment = () => {
           console.error("no context");
           return;
         }
+
         const { userType, patientID } = context?.state.userDetails;
         if (userType === "clerk" && !selectedPatient) {
-          console.error("submit with no patient");
+          setError({error: "Please select a patient."})
+          return;
         }
 
         if (!activeDoctor) {
-          console.error("submit with no doctor set");
+          setError({error: "Please select a doctor"})
+          return
         }
 
         if (!selectedAppointment) {
-          console.error("submit with no appointment selected");
+          setError({error: "Please select an appointment"})
+          return;
         }
 
-        const resp = await submitCreateAppointment({
+        const resp = await submitCreateAppointment(selectedAppointment.id, {
           description: description,
           patientID: userType === "patient" ? parseInt(patientID, 10) : (selectedPatient as Patient).patientID,
           doctorID: (activeDoctor as Doctor).doctorID,
@@ -49,7 +53,7 @@ const CreateAppointment = () => {
         })
 
         if (!resp) {
-          console.error("submit with no appointment selected");
+          setError({error: "submit failed"});
         }
     }
 
@@ -158,9 +162,9 @@ const CreateAppointment = () => {
       ) : <></>
 
       return (
-        <div className="min-h-screen flex flex-col justify-start bg-gray-100">
-        <div className="w-full flex justify-center py-12">
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80 items-stretch bg-gray-200 p-4 rounded-lg">
+        <div className="min-h-screen w-screen flex flex-col items-center bg-gray-100">
+        <div className="w-9/12 flex justify-center py-12">
+          <form onSubmit={handleSubmit} className="flex flex-col w-full gap-2 w-80 items-stretch bg-gray-200 p-4 rounded-lg">
             <h2 className="text-2xl font-semibold mb-4">Create Appointment</h2>
             <fieldset className='bg-white rounded-lg p-4 mb-4'>
               <label className="block mb-2">Doctor:</label>
@@ -169,7 +173,7 @@ const CreateAppointment = () => {
               </select>
             </fieldset>
             {activeDoctor && appointmentField}
-            {patientList.length && selectPatientField}
+            {patientList.length > 0 && selectPatientField}
             {selectedDoctorComponent}
             {selectPatientComponent}
           <div className="flex justify-between">

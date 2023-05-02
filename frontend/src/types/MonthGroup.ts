@@ -23,20 +23,23 @@ export const getMonthFromNumber = (month: number): string => {
     return "Unknown month " + month;
 }
 
-
-
  export class MonthGroup {
     month: string;
     appointments: Appointment[][];
+    total: number;
 
     constructor(month: string) {
         this.month = month;
         this.appointments = Array(31);
-        this.appointments.fill([]);
+        this.total = 0;
+        for (let i = 0; i < this.appointments.length; i++) {
+            this.appointments[i] = [];
+        }
     }
 
     pushAppointment(day: number, appointment: Appointment) {
         this.appointments[day].push(appointment);
+        this.total += 1;
     }
 
     getDayAppointments(day: number): Appointment[] {

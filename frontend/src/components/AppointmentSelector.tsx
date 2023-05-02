@@ -31,9 +31,9 @@ const AppointmentSelector = ({ appointments, setSelectedAppointment }: Appointme
     const groups = createGroups(appointments);
     return (
         <div>
-            {groups.map(({month, appointments}) => <AppointmentMonth key={month} title={month}>
-                {appointments.map((day, i) => <DayGroup key={`${month}${i}`} day={i + 1} appointments={day} selectHandler={setSelectedAppointment} />)}
-            </AppointmentMonth>)}
+            {groups.map(({month, appointments, total}) => total > 0 ? <AppointmentMonth key={month} title={month}>
+                {appointments.map((day, i) => day.length > 0 ? <DayGroup key={`${month}${i}`} day={i + 1} appointments={day} selectHandler={setSelectedAppointment} /> : <></>)}
+            </AppointmentMonth> : <></>)}
         </div>
     )
 }

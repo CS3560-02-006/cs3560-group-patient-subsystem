@@ -58,8 +58,8 @@ const getAuthHeaders = () => {
     };
 };
 
-const submitCreateAppointment = async (req: CreateAppointmentRequest): Promise<boolean> => {
-    const resp = await fetch('/api/createAppointment', {
+const submitCreateAppointment = async (id: number, req: CreateAppointmentRequest): Promise<boolean> => {
+    const resp = await fetch(`/api/createAppointment/${id}`, {
         method: "PATCH",
         headers: getAuthHeaders(),
         body: JSON.stringify(req),

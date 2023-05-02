@@ -14,7 +14,7 @@ const AppointmentMiniCard = ({appointment, ...divProps}: AppointmentMiniCardProp
     const { startTime, endTime } = appointment;
     return (
         <div {...divProps}>
-            <span className="font-bold">{getMonthFromNumber(startTime.getMonth())} {startTime.getDay().toLocaleString(undefined, { minimumIntegerDigits: 2 })}: </span>
+            <span className="font-bold">{getMonthFromNumber(startTime.getMonth())} {(startTime.getDay() + 1).toLocaleString(undefined, { minimumIntegerDigits: 2 })}: </span>
             <span>{timeString(startTime)}-{timeString(endTime)}</span>
         </div>
     )

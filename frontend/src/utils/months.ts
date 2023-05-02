@@ -7,7 +7,7 @@ export const createGroups = (appointments: Appointment[]): MonthGroup[] => {
     console.log("createGroups", appointments)
     let groups: MonthGroup[] = Array(12);
     for (let i = 0; i < 12; i++ ) {
-        groups.push(new MonthGroup(getMonthFromNumber(i + 1)))
+        groups[i] = new MonthGroup(getMonthFromNumber(i + 1))
     }
 
     appointments.forEach((appointment) => {

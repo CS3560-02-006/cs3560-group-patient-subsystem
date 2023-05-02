@@ -8,6 +8,7 @@ import { fetchAvailableDoctors } from '../utils/api';
 import UserContext from '../authentication/context';
 import { Patient } from '../types/Patient';
 import PatientCard from './PatientCard';
+import { removeListener } from 'process';
 //UI functionality for creating a new appointment
 
 const CreateAppointment = () => {
@@ -18,6 +19,7 @@ const CreateAppointment = () => {
     const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null)
     const [description, setDescription] = useState<string>("");
     const [error, setError] = useState<ErrorResponse | null>(null);
+    const [submitOK, setSubmitOK] = useState<boolean>(false);
     const context = useContext(UserContext);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -54,6 +56,8 @@ const CreateAppointment = () => {
 
         if (!resp) {
           setError({error: "submit failed"});
+        } else {
+          setSubmitOK(true);
         }
     }
 
@@ -83,6 +87,14 @@ const CreateAppointment = () => {
     useEffect(()=>{
         setSelectedAppointment(null);
     }, [activeDoctor])
+
+    useEffect(() => {
+      let interval: NodeJS.Timeout;
+      if (submitOK) {
+        interval = setTimeout(() => setSubmitOK(false), 5000)
+      }
+      return () => clearTimeout(interval);
+    }, [submitOK])
     
     useEffect(() => {
         const doFetch = async () => {
@@ -124,7 +136,6 @@ const CreateAppointment = () => {
           <AppointmentMiniCard appointment={selectedAppointment as Appointment} />
         </div>
       ) : <></>;
-
 
     const appointmentField = activeDoctor ? (
         <>
@@ -180,6 +191,7 @@ const CreateAppointment = () => {
             <button className="px-4 py-2 rounded-lg bg-blue-600 text-white" type='submit'>Submit</button>
             <button className="px-4 py-2 rounded-lg bg-red-600 text-white" type='button' onClick={() => {}}>Cancel</button>
           </div>
+          {submitOK && "Succesfully updated"}
           </form>
           </div>
         </div>

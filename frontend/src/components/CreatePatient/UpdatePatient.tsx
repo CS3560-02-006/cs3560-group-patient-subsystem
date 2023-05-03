@@ -5,11 +5,14 @@ import { getAuthHeaders } from "../../utils/api";
 import "./patient.css";
 import { useNavigate } from "react-router-dom";
 
+// Define component properties
 interface Props {
   userDetails: UserDetails;
 }
 
+// Create UpdatePatient component with the defined properties
 const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
+  // Declare component state variables
   const [patients, setPatients] = useState<Patient[]>([]);
   const [selectedPatientId, setSelectedPatientId] = useState<number>(0);
   const [error, setError] = useState<string>("");
@@ -33,6 +36,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
   });
   const navigate = useNavigate();
 
+  // Fetch patients from the backend API and update the state
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -47,6 +51,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
         const responseData = await response.json();
         setPatients(responseData);
 
+        // Update the patient state if the user is a patient
         if (userDetails.userType === "patient") {
           const patientData = responseData.find(
             (p: Patient) =>
@@ -64,6 +69,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     fetchPatients();
   }, [userDetails]);
 
+  // Update the patient state when form inputs change
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setPatient((prevState: Patient) => ({
@@ -72,6 +78,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }));
   };
 
+  // Update the dateOfBirth state when the date input changes
   const handleDateOfBirthChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -82,6 +89,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }));
   };
 
+  // Update the patient address state when address inputs change
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setPatient((prevState: Patient) => ({
@@ -93,6 +101,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }));
   };
 
+  // Update the selected patient and patient state when a patient is selected
   const handlePatientSelection = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -107,6 +116,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }
   };
 
+  // Submit the updated patient data to the backend API when the form is submitted
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -131,6 +141,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }
   };
 
+  // Delete the selected patient record from the backend
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/patient/${patient.patientID}/`, {
@@ -149,6 +160,7 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
     }
   };
 
+  // Render the form with patient details
   return (
     <div className="container">
       {error && <div className="error">{error}</div>}

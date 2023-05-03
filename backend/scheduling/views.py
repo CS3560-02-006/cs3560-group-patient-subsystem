@@ -2,41 +2,40 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
-from scheduling.controllers.appointments import getAppointments, createAppointment, updateAppointment, deleteAppointment
+from scheduling.controllers.appointments import getAppointments, updateAppointment
 from scheduling.controllers.patients import getPatients, createPatient, updatePatient, deletePatient
 from scheduling.controllers.doctors import getDoctors
 from scheduling.controllers.auth import getUser, createUser, updateUser, deleteUser, loginUser, getUser
 from .authentication import api_authentication
 
-
+# Login route that calls loginUser function
 @api_view(['POST'])
 def loginHandler(request):
     return loginUser(request)
 
 
-# Routes to appropriate controls for appointments depending on http method
+# Route that handles appointment-related requests depending on the HTTP method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-# @api_authentication
+@api_authentication
 def appointmentHandler(request, appointment_id=None):
     if request.method == 'GET':
         return getAppointments(request)
-    if request.method == 'POST':
-        return createAppointment(request)
+    # if request.method == 'POST':
+    #     return createAppointment(request)
     if request.method == 'PATCH':
         return updateAppointment(request, appointment_id)
-    if request.method == 'DELETE':
-        return deleteAppointment(request)
-
-# Routes to appropriate controls for doctors depending on http method
+    # if request.method == 'DELETE':
+    #     return deleteAppointment(request)
 
 
+# Route that handles doctor-related requests
 @api_view(['GET'])
-# @api_authentication
+@api_authentication
 def doctorHandler(request):
     return getDoctors(request)
 
 
-# Routes to appropriate controls for patients depending on http method
+# Route that handles patient-related requests depending on the HTTP method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
 def patientHandler(request, patient_id=None):
     if request.method == 'GET':
@@ -50,12 +49,14 @@ def patientHandler(request, patient_id=None):
         return deletePatient(request, patient_id)
 
 
+# Route for creating a new user
 @api_view(['POST'])
 def handleCreate(request):
     print(request)
     return createUser(request)
 
 
+# Route that handles user-related requests depending on the HTTP method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
 @api_authentication
 def userHandler(request, user_id=None):

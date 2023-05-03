@@ -3,46 +3,48 @@ from django.db import connection
 from rest_framework import status
 
 
+# Function to fetch all appointments and their details
 def getAppointments(request):
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT a.*, p.name as patient_name, d.name as doctor_name
-            FROM Appointment a
-            JOIN Patient p ON a.patientID = p.patientID
-            JOIN Doctor d ON a.doctorID = d.doctorID
-        """)
-        result = [dict(zip([column[0] for column in cursor.description], row))
-                  for row in cursor.fetchall()]
+    try:
+        # Connect to the database and execute the SQL query
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT a.*, p.name as patient_name, d.name as doctor_name
+                FROM Appointment a
+                JOIN Patient p ON a.patientID = p.patientID
+                JOIN Doctor d ON a.doctorID = d.doctorID
+            """)
+            # Store the query result in a list of dictionaries
+            result = [dict(zip([column[0] for column in cursor.description], row))
+                      for row in cursor.fetchall()]
 
-    formatted_appointments = []
-    for row in result:
-        appointment = {
-            'appointmentID': row['appointmentID'],
-            'doctorID': row['doctorID'],
-            'doctorName': row['doctor_name'],
-            'patientID': row['patientID'],
-            'patientName': row['patient_name'],
-            'date': row['date'].strftime('%Y-%m-%d'),
-            'startTime': row['startTime'].strftime('%H:%M:%S'),
-            'endTime': row['endTime'].strftime('%H:%M:%S'),
-            'status': row['status'],
-        }
-        formatted_appointments.append(appointment)
+        # Format the appointment data for the response
+        formatted_appointments = []
+        for row in result:
+            appointment = {
+                'appointmentID': row['appointmentID'],
+                'doctorID': row['doctorID'],
+                'doctorName': row['doctor_name'],
+                'patientID': row['patientID'],
+                'patientName': row['patient_name'],
+                'date': row['date'].strftime('%Y-%m-%d'),
+                'startTime': row['startTime'].strftime('%H:%M:%S'),
+                'endTime': row['endTime'].strftime('%H:%M:%S'),
+                'status': row['status'],
+            }
+            formatted_appointments.append(appointment)
 
-    return Response(formatted_appointments)
+        # Return the formatted appointments as a response
+        return Response(formatted_appointments)
 
-
-# Creates new appointment
-def createAppointment(request):
-    # take request data
-    # create new db entry
-    # return success
-    return Response(request.data)
-
-# updates appointment attributes
+    except Exception as e:
+        print(f"Error in getAppointments: {e}")
+        return Response({"error": "Failed to fetch appointments."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# Function to update appointment details
 def updateAppointment(request, appointment_id):
+    # Extract the appointment data from the request
     patient_id = request.data.get('patientID')
     doctor_id = request.data.get('doctorID')
     date = request.data.get('date')
@@ -50,6 +52,7 @@ def updateAppointment(request, appointment_id):
     end_time = request.data.get('endTime')
     status = request.data.get('status')
 
+    # Create a dictionary to store the fields to update
     update_fields = {}
     if patient_id is not None:
         update_fields['patientID'] = patient_id
@@ -64,21 +67,20 @@ def updateAppointment(request, appointment_id):
     if status:
         update_fields['status'] = status
 
-    with connection.cursor() as cursor:
-        if update_fields:
-            set_clause = ', '.join(
-                [f"{field}=%s" for field in update_fields.keys()])
-            set_values = list(update_fields.values())
-            set_values.append(appointment_id)
-            cursor.execute(
-                f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
+    try:
+        # Connect to the database and execute the update query
+        with connection.cursor() as cursor:
+            if update_fields:
+                set_clause = ', '.join(
+                    [f"{field}=%s" for field in update_fields.keys()])
+                set_values = list(update_fields.values())
+                set_values.append(appointment_id)
+                cursor.execute(
+                    f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
 
-    return Response(3)
+        # Return a success response after updating the appointment
+        return Response({"success": "Appointment updated successfully."}, status=status.HTTP_200_OK)
 
-
-# cancels existing appointment
-def deleteAppointment(request):
-    # find appointment in database
-    # delete element
-    # return response
-    return Response(request.data)
+    except Exception as e:
+        print(f"Error in updateAppointment: {e}")
+        return Response({"error": "Failed to update appointment."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

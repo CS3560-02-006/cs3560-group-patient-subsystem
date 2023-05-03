@@ -4,7 +4,9 @@ import { getAuthHeaders } from "../../utils/api";
 import "./patient.css";
 import { useNavigate } from "react-router-dom";
 
+// CreatePatient component
 const CreatePatient = () => {
+  // Initialize state for error message and patient object
   const [error, setError] = useState<string>("");
   const [patient, setPatient] = useState<Patient>({
     patientID: 0,
@@ -23,6 +25,7 @@ const CreatePatient = () => {
   });
   const navigate = useNavigate();
 
+  // Handle changes to input fields for patient details
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setPatient((prevState: Patient) => ({
@@ -31,6 +34,7 @@ const CreatePatient = () => {
     }));
   };
 
+  // Handle changes to input field for patient's date of birth
   const handleDateOfBirthChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -41,6 +45,7 @@ const CreatePatient = () => {
     }));
   };
 
+  // Handle changes to input fields for patient's address
   const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setPatient((prevState: Patient) => ({
@@ -52,30 +57,35 @@ const CreatePatient = () => {
     }));
   };
 
+  // Handle form submission to create new patient record
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // Make backend API call to create new patient record
     try {
-      console.log(patient);
       const response = await fetch("/api/patient/", {
         method: "POST",
         headers: getAuthHeaders(),
         body: JSON.stringify(patient),
       });
 
+      // Check if the response is not ok and throw an error if necessary
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
 
+      // Process the response and navigate to the root page
       const responseData = await response.json();
       console.log(responseData);
       navigate("/");
     } catch (error) {
+      // Set error message and log error to console
       setError("Error while submitting patient record:");
       console.error("Error while submitting patient record:", error);
     }
   };
 
+  // Render the form to collect patient details and submit the new patient record
   return (
     <div className="container">
       {error && <div className="error">{error}</div>}

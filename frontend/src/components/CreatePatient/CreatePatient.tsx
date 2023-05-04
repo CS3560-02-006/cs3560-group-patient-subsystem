@@ -91,7 +91,8 @@ const CreatePatient = () => {
 
       // Process the response and navigate to the root page
       const responseData = await response.json();
-      alert("Patient record created successfully!");
+      console.log(responseData)
+      alert(`Patient record created successfully for ${responseData.name} with ID: ${responseData.patientID}`);
       navigate("/");
     } catch (error) {
       // Set error message and log error to console

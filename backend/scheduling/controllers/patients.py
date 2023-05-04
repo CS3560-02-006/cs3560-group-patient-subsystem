@@ -89,7 +89,7 @@ def createPatient(request):
             cursor.execute("INSERT INTO Address (patientID, street, apt, city, state, zipcode) VALUES (%s, %s, %s, %s, %s, %s)", [
                             patientID, street, apt, city, state, zipcode])
             
-        return Response({"patientID": patientID}, status=status.HTTP_201_CREATED)
+        return Response({"patientID": patientID, "name": name}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
         print(f"Error in createPatient: {e}")

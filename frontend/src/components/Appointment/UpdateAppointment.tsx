@@ -28,13 +28,14 @@ interface Props {
   userDetails: UserDetails;
 }
 
-const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
+const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [availableAppointments, setAvailableAppointments] = useState<
     Appointment[]
   >([]);
@@ -208,6 +209,7 @@ const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
           body: JSON.stringify({
             patientID: patient.patientID,
             status: "scheduled",
+            description,
           }),
         }
       );
@@ -216,7 +218,7 @@ const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
         throw new Error(`HTTP error: ${response.status}`);
       }
 
-      alert("Appointment created successfully");
+      alert("Appointment updated successfully");
       navigate("/");
     } catch (error) {
       console.error("Error creating appointment:", error);
@@ -303,10 +305,18 @@ const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
           </label>
         </>
       )}
+      <label>
+        Description:
+        <input
+          type="text"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </label>
       <button onClick={handleSubmit}>Update Appointment</button>
       <button onClick={() => navigate("/")}>Go Back</button>
     </div>
   );
 };
 
-export default CreateAppointment;
+export default UpdateAppointment;

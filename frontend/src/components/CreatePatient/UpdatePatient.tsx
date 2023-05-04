@@ -120,6 +120,21 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (
+      !patient.name ||
+      !patient.phoneNumber ||
+      !patient.insuranceProvider ||
+      !patient.dateOfBirth ||
+      !patient.policyNumber ||
+      !patient.address.street ||
+      !patient.address.city ||
+      !patient.address.state ||
+      !patient.address.zipcode
+    ) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
     try {
       console.log(patient);
       const response = await fetch(`/api/patient/${patient.patientID}/`, {
@@ -133,11 +148,12 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
       }
 
       const responseData = await response.json();
-      console.log(responseData);
+      alert("Patient record updated successfully!");
       navigate("/");
     } catch (error) {
       setError("Error while submitting patient record:");
       console.error("Error while submitting patient record:", error);
+      alert("Error while updating patient record. Please try again.");
     }
   };
 
@@ -290,7 +306,11 @@ const UpdatePatient: React.FC<Props> = ({ userDetails }) => {
           >
             Submit
           </button>
-          <button type="button" className="cancel-button" onClick={() => navigate('/')}>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate("/")}
+          >
             Cancel
           </button>
           {userDetails.userType === "clerk" && (

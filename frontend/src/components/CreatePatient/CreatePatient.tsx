@@ -61,6 +61,21 @@ const CreatePatient = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (
+      !patient.name ||
+      !patient.phoneNumber ||
+      !patient.insuranceProvider ||
+      !patient.dateOfBirth ||
+      !patient.policyNumber ||
+      !patient.address.street ||
+      !patient.address.city ||
+      !patient.address.state ||
+      !patient.address.zipcode
+    ) {
+      alert("Please fill out all required fields.");
+      return;
+    }
+
     // Make backend API call to create new patient record
     try {
       const response = await fetch("/api/patient/", {
@@ -76,12 +91,13 @@ const CreatePatient = () => {
 
       // Process the response and navigate to the root page
       const responseData = await response.json();
-      console.log(responseData);
+      alert("Patient record created successfully!");
       navigate("/");
     } catch (error) {
       // Set error message and log error to console
       setError("Error while submitting patient record:");
       console.error("Error while submitting patient record:", error);
+      alert("Error while submitting patient record. Please try again.");
     }
   };
 

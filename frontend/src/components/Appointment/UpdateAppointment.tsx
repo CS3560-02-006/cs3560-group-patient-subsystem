@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+// Import necessary dependencies
+import React, { useState, useEffect } from "react";
 import { getAuthHeaders } from "../../utils/api";
 import { Patient } from "../../types/Patient";
 import "./appointment.css";
@@ -28,7 +28,20 @@ interface Props {
   userDetails: UserDetails;
 }
 
-const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
+// Define Props interface for UpdateAppointment component
+interface Props {
+  userDetails: UserDetails;
+  currApt: {
+    appointmentID: string;
+    doctorID: string;
+    patientID: number;
+  };
+  onClose: () => void;
+}
+
+// UpdateAppointment component
+const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) => {
+  // Declare state variables
   const [patients, setPatients] = useState<Patient[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -40,12 +53,10 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     Appointment[]
   >([]);
   const [firstMount, setFirstMount] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const currApt = location.state.appointment;
 
   // Fetch doctors and patients
   useEffect(() => {
+    // Fetch doctors
     const fetchDoctors = async () => {
       try {
         const response = await fetch("/api/doctor/", {
@@ -63,6 +74,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
       }
     };
 
+    // Fetch patients
     const fetchPatients = async () => {
       try {
         const response = await fetch("/api/patient/", {
@@ -79,10 +91,12 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
       }
     };
 
+    // Call fetch functions
     fetchDoctors();
     fetchPatients();
   }, []);
 
+  // Set patient based on userType or currApt.patientID
   useEffect(() => {
     if (userDetails.userType === "patient" && patients.length > 0) {
       const patientFound = patients.find(
@@ -93,7 +107,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
       }
     } else if (currApt.patientID) {
       const patientFound = patients.find(
-        (p: Patient) => p.patientID === parseInt(currApt.patientID)
+        (p: Patient) => p.patientID === currApt.patientID
       );
       if (patientFound) {
         setPatient(patientFound);
@@ -101,6 +115,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     }
   }, [patients]);
 
+  // Set selectedDoctor based on currApt
   useEffect(() => {
     if (currApt) {
       const doctorID = currApt.doctorID;
@@ -113,6 +128,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     }
   }, [currApt, doctors]);
 
+  // Set available appointments based on selectedDoctor
   useEffect(() => {
     if (selectedDoctor) {
       setAvailableAppointments(
@@ -125,14 +141,13 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     }
   }, [selectedDoctor]);
 
+  // Set selectedDate and selectedTime based on currApt and availableAppointments
   useEffect(() => {
-    console.log(firstMount);
     if (currApt && selectedDoctor) {
       const foundAppointment = selectedDoctor.appointments.find(
         (appt: Appointment) => appt.appointmentID === currApt.appointmentID
       );
       if (foundAppointment && firstMount) {
-        console.log("running it");
         setSelectedDate(foundAppointment.date);
         setSelectedTime(foundAppointment.startTime);
         setFirstMount(false);
@@ -140,6 +155,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     }
   }, [currApt, availableAppointments]);
 
+  // Handle doctor selection change
   const handleDoctorChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -163,15 +179,18 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
     }
   };
 
+  // Handle date selection change
   const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDate(event.target.value);
     setSelectedTime("");
   };
 
+  // Handle time selection change
   const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTime(event.target.value);
   };
 
+  // Handle form submission
   const handleSubmit = async () => {
     if (!patient || !selectedDoctor || !selectedDate || !selectedTime) {
       alert("Please fill in all fields");
@@ -187,6 +206,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
       return;
     }
     try {
+      // Free up the existing appointment
       const resp = await fetch(`/api/appointment/${currApt.appointmentID}/`, {
         method: "PATCH",
         headers: getAuthHeaders(),
@@ -200,7 +220,9 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
       if (!resp.ok) {
         throw new Error(`HTTP error: ${resp.status}`);
       }
+      console.log(resp.body)
 
+      // Update the selected appointment
       const response = await fetch(
         `/api/appointment/${selectedAppointment.appointmentID}/`,
         {
@@ -213,19 +235,22 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
           }),
         }
       );
+      console.log(response.body)
 
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
 
       alert("Appointment updated successfully");
-      navigate("/");
+      onClose();
+      window.location.reload();
     } catch (error) {
       console.error("Error creating appointment:", error);
       alert("Error creating appointment");
     }
   };
 
+  // Render the UpdateAppointment component
   return (
     <div className="container">
       <h2>Update Appointment</h2>
@@ -314,7 +339,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails }) => {
         />
       </label>
       <button onClick={handleSubmit}>Update Appointment</button>
-      <button onClick={() => navigate("/")}>Go Back</button>
+      <button onClick={onClose}>Close</button>
     </div>
   );
 };

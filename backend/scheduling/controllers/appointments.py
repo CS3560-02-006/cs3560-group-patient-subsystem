@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from django.db import connection
-from rest_framework import status as stat
+from rest_framework import status as http_status
 
 
 # Function to fetch all appointments and their details
@@ -39,7 +39,8 @@ def getAppointments(request):
 
     except Exception as e:
         print(f"Error in getAppointments: {e}")
-        return Response({"error": "Failed to fetch appointments."})
+        return Response({"error": "Failed to fetch appointments."},
+                        status=http_status.HTTP_400_BAD_REQUEST)
 
 
 # Function to update appointment details
@@ -54,7 +55,7 @@ def updateAppointment(request, appointment_id):
 
     # Create a dictionary to store the fields to update
     update_fields = {}
-    if patient_id is not None:
+    if 'patientID' in request.data:
         update_fields['patientID'] = patient_id
     if doctor_id is not None:
         update_fields['doctorID'] = doctor_id
@@ -75,12 +76,13 @@ def updateAppointment(request, appointment_id):
                     [f"{field}=%s" for field in update_fields.keys()])
                 set_values = list(update_fields.values())
                 set_values.append(appointment_id)
-                cursor.execute(
-                    f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
+                query = f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s"
+                cursor.execute(query, set_values)
 
         # Return a success response after updating the appointment
         return Response({"success": "Appointment updated successfully."})
 
     except Exception as e:
         print(f"Error in updateAppointment: {e}")
-        return Response({"error": "Failed to update appointment."})
+        return Response({"error": "Failed to update appointment."}, 
+                        status=http_status.HTTP_400_BAD_REQUEST)

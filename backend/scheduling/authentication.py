@@ -40,7 +40,6 @@ def decode_token(token):
     payload = parts[1].rstrip('=')
     try:
         payload = base64.urlsafe_b64decode(payload + '===')
-        print(f'Decoded payload: {payload}')
         payload = json.loads(payload)
     except:
         print('Invalid base64-encoded string')

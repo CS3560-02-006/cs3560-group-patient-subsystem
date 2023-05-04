@@ -37,6 +37,7 @@ const SignUp: React.FC<Props> = ({ onSignUp }) => {
           if (response.ok) {
             const data = await response.json();
             onSignUp(data.token, data.userID, data.email, data.userType, data.patientID);
+            alert('Account created successfully')
             navigate("/")
           } else {
             setError('Invalid email or password');

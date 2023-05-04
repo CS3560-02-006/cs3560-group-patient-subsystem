@@ -61,6 +61,7 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
           if (response.ok) {
             const data = await response.json();
             onUpdate(data.token, data.userID, data.email, data.userType, data.patientID);
+            alert('Account Updated Successfully')
             navigate("/")
           } else {
             setError('Invalid email or password');
@@ -78,6 +79,7 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
 
     if (response.ok) {
       onDelete()
+      alert("Account Deleted Successfully")
       navigate('/');
     } else {
       console.log(response)

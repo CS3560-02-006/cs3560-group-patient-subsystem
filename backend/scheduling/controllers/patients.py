@@ -42,7 +42,7 @@ def getPatients(request, patient_id=None):
             }
             formatted_patients.append(formatted_patient)
 
-        return Response(formatted_patients, status=status.HTTP_200_OK)
+        return formatted_patients
 
     except Exception as e:
         print(f"Error in getPatients: {e}")

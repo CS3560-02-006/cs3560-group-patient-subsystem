@@ -25,7 +25,9 @@ const Home: React.FC<Props> = ({ userDetails }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/appointment")
+    fetch("/api/appointment", {
+      headers: getAuthHeaders(),
+    })
       .then((response) => response.json())
       .then((data) => {
         if (userDetails.userType === "patient") {

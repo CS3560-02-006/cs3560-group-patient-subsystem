@@ -37,6 +37,7 @@ def doctorHandler(request):
 
 # Route that handles patient-related requests depending on the HTTP method
 @api_view(['GET', 'POST', 'PATCH', 'DELETE'])
+@api_authentication
 def patientHandler(request, patient_id=None):
     if request.method == 'GET':
         patients = getPatients(request, patient_id)

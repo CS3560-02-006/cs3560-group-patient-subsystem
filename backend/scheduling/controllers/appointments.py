@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from django.db import connection
-from rest_framework import status
+from rest_framework import status as stat
 
 
 # Function to fetch all appointments and their details
@@ -39,7 +39,7 @@ def getAppointments(request):
 
     except Exception as e:
         print(f"Error in getAppointments: {e}")
-        return Response({"error": "Failed to fetch appointments."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to fetch appointments."})
 
 
 # Function to update appointment details
@@ -79,8 +79,8 @@ def updateAppointment(request, appointment_id):
                     f"UPDATE appointmentsdb.Appointment SET {set_clause} WHERE appointmentID=%s", set_values)
 
         # Return a success response after updating the appointment
-        return Response({"success": "Appointment updated successfully."}, status=status.HTTP_200_OK)
+        return Response({"success": "Appointment updated successfully."})
 
     except Exception as e:
         print(f"Error in updateAppointment: {e}")
-        return Response({"error": "Failed to update appointment."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": "Failed to update appointment."})

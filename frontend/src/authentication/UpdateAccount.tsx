@@ -28,10 +28,27 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
       return;
     }
 
+    interface RequestBody {
+      patientID?: string | null;
+      email: string;
+      password: string;
+      userType: string;
+    }
+    
+    const requestBody: RequestBody = {
+      email,
+      password,
+      userType: userDetails.userType,
+    };
+    
+    if (patientID !== null) {
+      requestBody.patientID = patientID;
+    }
+    
     const response = await fetch(`/api/user/${userDetails.userID}/`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
-      body: JSON.stringify({ patientID, email, password, userType: userDetails.userType }), 
+      body: JSON.stringify(requestBody),
     });
 
     if (response.ok) {

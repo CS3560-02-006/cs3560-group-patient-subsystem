@@ -192,6 +192,7 @@ const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
         body: JSON.stringify({
           patientID: null,
           status: "available",
+          description: "",
         }),
       });
 

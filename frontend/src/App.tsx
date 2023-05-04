@@ -10,7 +10,6 @@ import UpdateAccount from "./authentication/UpdateAccount";
 import UpdatePatient from "./components/CreatePatient/UpdatePatient";
 import UserContext from "./authentication/context";
 import { initialState, reducer } from "./reducer/reducer";
-import UpdateAppointment from "./components/Appointment/UpdateAppointment";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(
@@ -80,10 +79,6 @@ function App() {
                     onDelete={handleLogout}
                   />
                 }
-              />
-              <Route
-                path="/updateAppointment"
-                element={<UpdateAppointment userDetails={userDetails} />}
               />
             </Routes>
           ) : (

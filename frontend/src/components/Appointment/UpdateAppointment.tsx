@@ -4,6 +4,7 @@ import { getAuthHeaders } from "../../utils/api";
 import { Patient } from "../../types/Patient";
 import "./appointment.css";
 import { UserDetails } from "../../types/UserDetails";
+import { month_names } from "../../types/MonthGroup";
 
 interface Doctor {
   doctorID: number;
@@ -306,7 +307,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
                 const [year, month, day] = date.split("-");
                 return (
                   <option key={date} value={date}>
-                    {`${month}-${day}`}
+                    {`${month_names[parseInt(month)]} ${day}`}
                   </option>
                 );
               })}

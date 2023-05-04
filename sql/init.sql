@@ -194,17 +194,6 @@ INSERT INTO Address(patientID, street, apt, city, state, zipcode)
     (25, "727 Beverly Hills Blvd", NULL, "Los Angeles", "CA", "91606")
 ;
 
--- INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
--- 	VALUES
---     (1, "2023-05-09","12:30:00", "13:00:00", "available"),
---     (1, "2023-05-10","13:30:00", "14:00:00", "available"),
---     (2, "2023-05-10","11:00:00", "11:30:00", "available"),
---     (2, "2023-05-11","9:30:00", "10:00:00", "available"), 
---     (3, "2023-05-13","15:30:00", "16:00:00", "available"),
---     (3, "2023-05-12","16:00:00", "16:30:00", "available")
--- ;
-
-
 
 INSERT INTO Appointment(doctorID, patientID, date, startTime, endTime, status)
 VALUES
@@ -233,30 +222,76 @@ INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, pa
 );
 
 
+-- Drop existing procedure if it exists
 DROP PROCEDURE IF EXISTS generateAppointments;
 DELIMITER //
 CREATE PROCEDURE generateAppointments()
 BEGIN
-  DECLARE currentDate DATE DEFAULT '2023-05-08';
+  -- Declare variables
+  DECLARE baseDate DATE DEFAULT '2023-05-09'; -- Starting date
+  DECLARE currentDate DATE;
   DECLARE currentDoctorID INT DEFAULT 1;
   DECLARE appointmentStartTime TIME;
-  
-  WHILE currentDate <= '2023-05-31' DO
-    WHILE currentDoctorID <= 3 DO
-      SET appointmentStartTime = '08:00:00';
-      
-      WHILE TIME_TO_SEC(appointmentStartTime) < TIME_TO_SEC('20:00:00') DO
-        INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
-        VALUES
-          (currentDoctorID, currentDate, appointmentStartTime, ADDTIME(appointmentStartTime, '00:30:00'), 'available');
-          
-        SET appointmentStartTime = ADDTIME(appointmentStartTime, '00:30:00');
+  DECLARE appointmentsPerDay INT;
+  DECLARE appointmentMinuteOffset INT;
+  DECLARE workingDaysPerWeek INT;
+  DECLARE dayOfWeek INT;
+
+  -- Loop through each week until the end of June
+  WHILE baseDate <= '2023-06-30' DO
+    -- Set the current date to the base date for each doctor
+    SET currentDate = baseDate;
+
+    -- Loop through doctors with IDs from 1 to 25
+    WHILE currentDoctorID <= 25 DO
+      -- Reset working days per week counter for each doctor
+      SET workingDaysPerWeek = 0;
+
+      -- Loop through days of the week to ensure 5 working days per week
+      WHILE workingDaysPerWeek < 5 DO
+        -- Get the day of the week (1 = Sunday, 2 = Monday, ..., 7 = Saturday)
+        SET dayOfWeek = DAYOFWEEK(currentDate);
+
+        -- Check if the current day is not Saturday or Sunday
+        IF dayOfWeek < 6 THEN
+          -- Randomly set the number of appointments per day between 3 and 6
+          SET appointmentsPerDay = FLOOR(3 + RAND() * 4);
+
+          -- Loop to create appointments for the current day
+          WHILE appointmentsPerDay > 0 DO
+            -- Randomly set appointment start minute (00, 15, or 30)
+            SET appointmentMinuteOffset = FLOOR(RAND() * 3) * 15;
+            -- Randomly set appointment start time between 8:00 AM and 8:00 PM
+            SET appointmentStartTime = MAKETIME(8 + FLOOR(RAND() * 12), appointmentMinuteOffset, 0);
+
+            -- Check for overlapping appointments
+            IF NOT EXISTS (SELECT 1 FROM Appointment WHERE doctorID = currentDoctorID AND date = currentDate AND (TIME_TO_SEC(appointmentStartTime) BETWEEN TIME_TO_SEC(startTime) AND TIME_TO_SEC(endTime) OR TIME_TO_SEC(ADDTIME(appointmentStartTime, '00:30:00')) BETWEEN TIME_TO_SEC(startTime) AND TIME_TO_SEC(endTime))) THEN
+              -- Insert non-overlapping appointment into the database
+              INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
+              VALUES
+                (currentDoctorID, currentDate, appointmentStartTime, ADDTIME(appointmentStartTime, '00:30:00'), 'available');
+
+              -- Decrease the number of appointments left to schedule for the day
+              SET appointmentsPerDay = appointmentsPerDay - 1;
+            END IF;
+          END WHILE;
+
+          -- Increment the working day counter for the current doctor
+          SET workingDaysPerWeek = workingDaysPerWeek + 1;
+        END IF;
+
+        -- Move to the next day
+        SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
       END WHILE;
-      
+
+      -- Reset the current date to the base date and move to the next doctor
+      SET currentDate = baseDate;
       SET currentDoctorID = currentDoctorID + 1;
     END WHILE;
+
+    -- Reset doctorID and move to the next week (start of the loop)
     SET currentDoctorID = 1;
-    SET currentDate = DATE_ADD(currentDate, INTERVAL 1 DAY);
+    SET baseDate = DATE_ADD(baseDate, INTERVAL 7 DAY);
   END WHILE;
 END;
 //

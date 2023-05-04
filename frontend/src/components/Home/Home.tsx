@@ -3,6 +3,7 @@ import { UserDetails } from "../../types/UserDetails";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import { getAuthHeaders } from "../../utils/api";
+import { month_names } from "../../types/MonthGroup";
 
 interface Appointment {
   appointmentID: string;
@@ -48,6 +49,13 @@ const Home: React.FC<Props> = ({ userDetails }) => {
       });
   }, [userDetails]);
 
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const month = month_names[date.getMonth() + 1];
+    const day = date.getDate();
+    return `${month} ${day}`;
+  };
+
   const handleUpdate = (appointment: Appointment) => {
     navigate("/updateAppointment", { state: { appointment } });
   };
@@ -64,6 +72,7 @@ const Home: React.FC<Props> = ({ userDetails }) => {
         body: JSON.stringify({
           patientID: null,
           status: "available",
+          description: "",
         }),
       });
 
@@ -103,7 +112,7 @@ const Home: React.FC<Props> = ({ userDetails }) => {
               {userDetails.userType === "clerk" && (
                 <td>{appointment.patientName}</td>
               )}
-              <td>{appointment.date}</td>
+              <td>{formatDate(appointment.date)}</td>
               <td>{appointment.startTime}</td>
               <td>{appointment.endTime}</td>
               <td>

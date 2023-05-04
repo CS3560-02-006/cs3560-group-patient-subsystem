@@ -30,7 +30,7 @@ export const getMonthFromNumber = (month: number): string => {
 
     constructor(month: string) {
         this.month = month;
-        this.appointments = Array(31);
+        this.appointments = Array(32);
         this.total = 0;
         for (let i = 0; i < this.appointments.length; i++) {
             this.appointments[i] = [];

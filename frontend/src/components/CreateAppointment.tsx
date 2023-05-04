@@ -8,7 +8,6 @@ import { fetchAvailableDoctors } from '../utils/api';
 import UserContext from '../authentication/context';
 import { Patient } from '../types/Patient';
 import PatientCard from './PatientCard';
-import { removeListener } from 'process';
 //UI functionality for creating a new appointment
 
 const CreateAppointment = () => {
@@ -46,11 +45,11 @@ const CreateAppointment = () => {
           return;
         }
 
-        const resp = await submitCreateAppointment(selectedAppointment.id, {
+        const resp = await submitCreateAppointment(selectedAppointment.appointmentID, {
           description: description,
           patientID: userType === "patient" ? parseInt(patientID, 10) : (selectedPatient as Patient).patientID,
           doctorID: (activeDoctor as Doctor).doctorID,
-          appointmentID: (selectedAppointment as Appointment).id,
+          appointmentID: (selectedAppointment as Appointment).appointmentID,
           status: "scheduled",
         })
 
@@ -96,6 +95,14 @@ const CreateAppointment = () => {
       return () => clearTimeout(interval);
     }, [submitOK])
     
+    useEffect(() => {
+      let interval: NodeJS.Timeout;
+      if (error) {
+        interval = setTimeout(() => setError(null), 5000)
+      }
+      return () => clearTimeout(interval);
+    }, [error])
+
     useEffect(() => {
         const doFetch = async () => {
             setDoctorList([]);
@@ -161,13 +168,16 @@ const CreateAppointment = () => {
 
       const selectPatientField = (
         <div>
-          {patientList.map(patient => <PatientCard key={patient.patientID} patient={patient} setSelectedPatient={setSelectedPatient}/>)}
+          <div>Select a patient:</div>
+          <div className="flex flex-wrap gap-px bg-white rounded-md">
+            {patientList.map(patient => <PatientCard key={patient.patientID} patient={patient} setSelectedPatient={setSelectedPatient}/>)}
+          </div>
         </div>
       )
 
       const selectPatientComponent = selectedPatient ? (
         <div className="bg-white rounded-lg p-4 mb-4">
-          <p className="mb-2">Selected patient::</p>
+          <p className="mb-2">Selected patient:</p>
           <PatientCard patient={selectedPatient} setSelectedPatient={setSelectedPatient} />
         </div>
       ) : <></>

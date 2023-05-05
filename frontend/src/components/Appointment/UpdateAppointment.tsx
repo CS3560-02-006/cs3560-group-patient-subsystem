@@ -5,26 +5,8 @@ import { Patient } from "../../types/Patient";
 import "./appointment.css";
 import { UserDetails } from "../../types/UserDetails";
 import { month_names } from "../../types/MonthGroup";
+import {Doctor, Appointment} from '../../types/Alt'
 
-interface Doctor {
-  doctorID: number;
-  name: string;
-  phoneNumber: string;
-  emailAddress: string;
-  speciality: string;
-  appointments: Appointment[];
-}
-
-interface Appointment {
-  appointmentID: string;
-  doctorID: string;
-  patientID: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: string;
-  description: string;
-}
 
 interface Props {
   userDetails: UserDetails;

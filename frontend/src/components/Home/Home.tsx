@@ -6,18 +6,7 @@ import { getAuthHeaders } from "../../utils/api";
 import { month_names } from "../../types/MonthGroup";
 import UpdateAppointment from "../Appointment/UpdateAppointment";
 import Modal from "../../layout/Modal";
-
-interface Appointment {
-  appointmentID: string;
-  doctorID: string;
-  doctorName: string;
-  patientID: number;
-  patientName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: string;
-}
+import {Appointment} from '../../types/AltApp'
 
 interface Props {
   userDetails: UserDetails;

@@ -4,14 +4,16 @@ import {getAuthHeaders} from '../utils/api'
 import { UserDetails } from '../types/UserDetails';
 import './auth.css';
 
+// Define the interface for UpdateAccount component's Props
 interface Props {
     onUpdate: (token: string, userID: string, email: string, userType: string, patientID: string) => void;
     userDetails: UserDetails;
     onDelete: () => void
   }
 
-
+// UpdateAccount component
 const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
+  // State variables for managing user input and component state
   const [patientID, setPatientID] = useState(userDetails.patientID); 
   const [email, setEmail] = useState(userDetails.email);
   const [password, setPassword] = useState('');
@@ -20,14 +22,17 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const navigate = useNavigate();
 
+  // Function to handle form submission for updating the account
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate if the password and passwordConfirmation match
     if (password !== passwordConfirmation) {
       setError('Passwords do not match');
       return;
     }
 
+    // Define the interface and structure for the request body
     interface RequestBody {
       patientID?: string | null;
       email: string;
@@ -45,12 +50,14 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
       requestBody.patientID = patientID;
     }
     
+    // Make PATCH request to update the user account
     const response = await fetch(`/api/user/${userDetails.userID}/`, {
       method: 'PATCH',
       headers: getAuthHeaders(),
       body: JSON.stringify(requestBody),
     });
 
+    // Handle the response of the PATCH request
     if (response.ok) {
         const response = await fetch('/api/login/', {
             method: 'POST',
@@ -71,12 +78,14 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
     }
   };
 
+  // Function to handle account deletion
   const handleDeleteAccount = async () => {
     const response = await fetch(`/api/user/${userDetails.userID}/`, {
       method: 'DELETE',
       headers: getAuthHeaders(),
     });
 
+    // Handle the response of the DELETE request
     if (response.ok) {
       onDelete()
       alert("Account Deleted Successfully")
@@ -87,6 +96,7 @@ const UpdateAccount: React.FC<Props>  = ({onUpdate, userDetails, onDelete}) => {
     }
   };
 
+  // Render the UpdateAccount component
   return (
     <div className="signup">
       <h2>Update Account</h2>

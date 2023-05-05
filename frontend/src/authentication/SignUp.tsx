@@ -2,31 +2,39 @@ import React, { useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom'
 import './auth.css';
 
+// Define the interface for SignUp component's Props
 interface Props {
     onSignUp: (token: string, userID: string, email: string, userType: string, patientID: string) => void;
   }
+
+// SignUp component
 const SignUp: React.FC<Props> = ({ onSignUp }) => {
-  const [patientID, setPatientID] = useState(''); // Add a state for userID
+  // State variables for managing user input and component state
+  const [patientID, setPatientID] = useState(''); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Function to handle form submission for user sign up
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validate if the password and passwordConfirmation match
     if (password !== passwordConfirmation) {
       setError('Passwords do not match');
       return;
     }
 
+    // Make POST request to create a new user
     const response = await fetch('/api/user/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ patientID, email, password, userType:"patient" }), // Add userID to the request body
+      body: JSON.stringify({ patientID, email, password, userType:"patient" }), 
     });
 
+    // Handle the response of the POST request
     if (response.ok) {
         const response = await fetch('/api/login/', {
             method: 'POST',
@@ -47,6 +55,7 @@ const SignUp: React.FC<Props> = ({ onSignUp }) => {
     }
   };
 
+  // Render the SignUp component
   return (
     <div className="signup">
       <h2>Sign Up</h2>

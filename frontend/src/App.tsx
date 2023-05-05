@@ -11,7 +11,9 @@ import UpdatePatient from "./components/Patient/UpdatePatient";
 import UserContext from "./authentication/context";
 import { initialState, reducer } from "./reducer/reducer";
 
+// Main App component
 function App() {
+  // State variables for user login status and details
   const [isLoggedIn, setIsLoggedIn] = useState(
     Boolean(localStorage.getItem("auth_token"))
   );
@@ -21,9 +23,9 @@ function App() {
     userType: localStorage.getItem("user_type") || "",
     patientID: localStorage.getItem("patient_id") || "",
   });
-
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // Function to handle login, setting local storage and updating state
   const handleLogin = (
     token: string,
     userID: string,
@@ -44,11 +46,13 @@ function App() {
     });
   };
 
+  // Function to handle logout by clearing local storage and updating state
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     setIsLoggedIn(false);
   };
 
+  // Render the App component
   return (
     <>
       <UserContext.Provider value={{ state, dispatch }}>

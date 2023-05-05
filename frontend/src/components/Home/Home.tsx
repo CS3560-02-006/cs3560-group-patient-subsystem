@@ -54,6 +54,12 @@ const Home: React.FC<Props> = ({ userDetails }) => {
     return `${month} ${day}`;
   };
 
+  const formatTime = (timeStr: string )=>{
+    let time = timeStr.split(':')
+
+    return `${time[0]}:${time[1]}`
+  }
+
   // Open update appointment modal
   const handleUpdate = (appointment: Appointment) => {
     setSelectedAppointment(appointment);
@@ -121,8 +127,8 @@ const Home: React.FC<Props> = ({ userDetails }) => {
                 <td>{appointment.patientName}</td>
               )}
               <td>{formatDate(appointment.date)}</td>
-              <td>{appointment.startTime}</td>
-              <td>{appointment.endTime}</td>
+              <td>{formatTime(appointment.startTime)}</td>
+              <td>{formatTime(appointment.endTime)}</td>
               <td>
                 <button onClick={() => handleUpdate(appointment)}>
                   Update

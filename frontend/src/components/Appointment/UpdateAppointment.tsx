@@ -110,37 +110,33 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
         setSelectedDoctor(foundDoctor);
       }
     }
-  }, [currApt, doctors]);
+  }, [doctors]);
 
   // Set available appointments based on selectedDoctor
+  // Set selectedDate and selectedTime based on currApt and availableAppointments
   useEffect(() => {
     if (selectedDoctor) {
       setAvailableAppointments(
         selectedDoctor.appointments.filter(
-          (appt: Appointment) => appt.status === "available"
+          (appt: Appointment) => appt.status === "available" || appt.appointmentID == currApt.appointmentID
         )
       );
     } else {
       setAvailableAppointments([]);
     }
-  }, [selectedDoctor]);
-
-  // Set selectedDate and selectedTime based on currApt and availableAppointments
-  useEffect(() => {
     if (currApt && selectedDoctor) {
       const foundAppointment = selectedDoctor.appointments.find(
         (appt: Appointment) => appt.appointmentID === currApt.appointmentID
       );
       if (foundAppointment && firstMount) {
-        setAvailableAppointments((prevState) => [...prevState, foundAppointment])
         setSelectedDate(foundAppointment.date);
-        setSelectedTime(`${foundAppointment.startTime}-${foundAppointment.endTime}`);
+        setSelectedTime(foundAppointment.startTime);
         setDescription(foundAppointment.description)
         setFirstMount(false);
       }
     }
-
   }, [selectedDoctor]);
+
 
   // Handle doctor selection change
   const handleDoctorChange = async (

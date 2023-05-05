@@ -221,6 +221,26 @@ INSERT INTO appointmentsdb.User (email, passwordHash, passwordSalt, userType, pa
   1
 );
 
+SET GLOBAL event_scheduler = ON;
+
+DELIMITER //
+CREATE EVENT update_appointments_status
+ON SCHEDULE EVERY 1 MINUTE
+DO
+BEGIN
+  UPDATE Appointment
+  SET status = 'unavailable'
+  WHERE status != 'unavailable'
+  AND date <= CURRENT_DATE()
+  AND startTime < CURRENT_TIME();
+END //
+DELIMITER ;
+
+INSERT INTO Appointment(doctorID, date, startTime, endTime, status)
+	VALUES
+    (1, "2023-05-05","12:30:00", "13:00:00", "available")
+;
+
 
 -- Drop existing procedure if it exists
 DROP PROCEDURE IF EXISTS generateAppointments;

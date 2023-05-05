@@ -31,12 +31,12 @@ const Home: React.FC<Props> = ({ userDetails }) => {
         if (userDetails.userType === "patient") {
           const filteredData = data.filter(
             (appointment: Appointment) =>
-              appointment.patientID === parseInt(userDetails.patientID, 10)
+              appointment.patientID === parseInt(userDetails.patientID, 10) && appointment.status == "scheduled"
           );
           setAppointments(filteredData);
         } else if (userDetails.userType === "clerk") {
           const filteredData = data.filter(
-            (appointment: Appointment) => appointment.status !== "available"
+            (appointment: Appointment) => appointment.status == "scheduled"
           );
           setAppointments(filteredData);
         }

@@ -14,8 +14,7 @@ def getUser(user_id):
     try:
         with connection.cursor() as cursor:
             # Fetch user with the given user_id
-            cursor.execute(
-                "SELECT userID, email, userType, patientID FROM appointmentsdb.User WHERE userID = %s", [user_id])
+            cursor.execute("SELECT userID, email, userType, patientID FROM appointmentsdb.User WHERE userID = %s", [user_id])
             user = cursor.fetchone()
             if user:
                 return {
@@ -32,6 +31,7 @@ def getUser(user_id):
 
 def createUser(request):
     try:
+        # Get fields from request body
         email = request.data.get('email')
         password = request.data.get('password')
         userType = request.data.get('userType')
@@ -44,8 +44,7 @@ def createUser(request):
 
         with connection.cursor() as cursor:
             # Check if a user with the same email already exists
-            cursor.execute(
-                "SELECT * FROM appointmentsdb.User WHERE email = %s", [email])
+            cursor.execute("SELECT * FROM appointmentsdb.User WHERE email = %s", [email])
             existing_email_user = cursor.fetchone()
 
             # If a user with the same email exists, return an error response
@@ -73,11 +72,13 @@ def createUser(request):
 
 def updateUser(request, user_id):
     try:
+        # Get fields from request body
         email = request.data.get('email')
         password = request.data.get('password')
         userType = request.data.get('userType')
         patientID = request.data.get('patientID')
 
+        # Create a dictionary for update fields
         update_fields = {}
         if email:
             update_fields['email'] = email
@@ -89,11 +90,9 @@ def updateUser(request, user_id):
         with connection.cursor() as cursor:
             if password:
                 # Get salt and hash the new password
-                cursor.execute(
-                    "SELECT passwordSalt FROM appointmentsdb.User WHERE userID=%s", [user_id])
+                cursor.execute("SELECT passwordSalt FROM appointmentsdb.User WHERE userID=%s", [user_id])
                 salt = cursor.fetchone()[0]
-                password_hash = hashlib.pbkdf2_hmac(
-                    'sha512', password.encode(), salt, 100000)
+                password_hash = hashlib.pbkdf2_hmac('sha512', password.encode(), salt, 100000)
                 update_fields['passwordHash'] = password_hash
 
             if update_fields:
@@ -102,8 +101,7 @@ def updateUser(request, user_id):
                     [f"{field}=%s" for field in update_fields.keys()])
                 set_values = list(update_fields.values())
                 set_values.append(user_id)
-                cursor.execute(
-                    f"UPDATE appointmentsdb.User SET {set_clause} WHERE userID=%s", set_values)
+                cursor.execute(f"UPDATE appointmentsdb.User SET {set_clause} WHERE userID=%s", set_values)
 
         return Response(status=status.HTTP_200_OK)
     except Exception as e:
@@ -114,8 +112,7 @@ def deleteUser(user_id):
     try:
         with connection.cursor() as cursor:
             # Execute delete query for the user with the given user_id
-            cursor.execute(
-                "DELETE FROM appointmentsdb.User WHERE userID = %s", [user_id])
+            cursor.execute("DELETE FROM appointmentsdb.User WHERE userID = %s", [user_id])
             
             # Check if any rows were affected by the query
             return cursor.rowcount > 0
@@ -124,20 +121,19 @@ def deleteUser(user_id):
 
 def loginUser(request):
     try:
+        # Get fields from request body
         email = request.data.get('email')
         password = request.data.get('password')
 
         cursor = connection.cursor()
         # Fetch user with the given email
-        cursor.execute(
-            "SELECT userID, passwordHash, passwordSalt, userType, patientID FROM appointmentsdb.User WHERE email = %s", [email])
+        cursor.execute("SELECT userID, passwordHash, passwordSalt, userType, patientID FROM appointmentsdb.User WHERE email = %s", [email])
         user = cursor.fetchone()
 
         if user:
             user_id, stored_hash, salt, user_type, patient_id = user
             # Hash the input password with the stored salt
-            password_hash = hashlib.pbkdf2_hmac(
-                'sha512', password.encode(), salt, 100000)
+            password_hash = hashlib.pbkdf2_hmac('sha512', password.encode(), salt, 100000)
 
             # Compare the input password hash with the stored hash
             if password_hash == stored_hash:
@@ -179,18 +175,14 @@ def encode_token(payload):
     payload_json = json.dumps(payload, separators=(',', ':'))
 
     # Base64 encode the header and payload
-    header_b64 = base64.urlsafe_b64encode(
-        header_json.encode('utf-8')).decode('utf-8').rstrip('=')
-    payload_b64 = base64.urlsafe_b64encode(
-        payload_json.encode('utf-8')).decode('utf-8').rstrip('=')
+    header_b64 = base64.urlsafe_b64encode(header_json.encode('utf-8')).decode('utf-8').rstrip('=')
+    payload_b64 = base64.urlsafe_b64encode(payload_json.encode('utf-8')).decode('utf-8').rstrip('=')
 
     # Create the token signature using the SECRET_KEY
-    signature = hmac.new(settings.SECRET_KEY.encode(
-        'utf-8'), f'{header_b64}.{payload_b64}'.encode('utf-8'), hashlib.sha256).digest()
+    signature = hmac.new(settings.SECRET_KEY.encode('utf-8'), f'{header_b64}.{payload_b64}'.encode('utf-8'), hashlib.sha256).digest()
     
     # Base64 encode the signature
-    signature_b64 = base64.urlsafe_b64encode(
-        signature).decode('utf-8').rstrip('=')
+    signature_b64 = base64.urlsafe_b64encode(signature).decode('utf-8').rstrip('=')
 
     # Return the complete JWT token
     return f'{header_b64}.{payload_b64}.{signature_b64}'

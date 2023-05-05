@@ -161,9 +161,7 @@ const CreateAppointment = () => {
     };
   }, [context?.state.userDetails.userType]);
 
-  if (error) {
-    return <div>{error.error}</div>;
-  }
+
   const selectedDoctorComponent = selectedAppointment ? (
     <div className="bg-white rounded-lg p-4 mb-4">
       <p className="mb-2">Selected appointment:</p>
@@ -254,6 +252,7 @@ const CreateAppointment = () => {
             {selectPatientComponent}
             {selectedDoctorComponent}
           </div>
+          {error && <div className="text-red-700">{error.error}</div>}
           <div className="flex justify-between">
             <button
               className="px-4 py-2 rounded-lg bg-blue-600 text-white"
@@ -282,7 +281,7 @@ const CreateAppointment = () => {
             <button
               className="px-4 py-2 rounded-lg bg-red-600 text-white"
               type="button"
-              onClick={() => {}}
+              onClick={() => navigate('/')}
             >
               Cancel
             </button>

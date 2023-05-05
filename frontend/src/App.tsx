@@ -1,13 +1,13 @@
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { useReducer, useState } from "react";
 import CreateAppointment from "./components/Appointment/CreateAppointment";
-import CreatePatient from "./components/CreatePatient/CreatePatient";
+import CreatePatient from "./components/Patient/CreatePatient";
 import Home from "./components/Home/Home";
 import Navbar from "./components/NavBar/NavBar";
 import Login from "./authentication/Login";
 import SignUp from "./authentication/SignUp";
 import UpdateAccount from "./authentication/UpdateAccount";
-import UpdatePatient from "./components/CreatePatient/UpdatePatient";
+import UpdatePatient from "./components/Patient/UpdatePatient";
 import UserContext from "./authentication/context";
 import { initialState, reducer } from "./reducer/reducer";
 

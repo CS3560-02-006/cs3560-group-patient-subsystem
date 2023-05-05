@@ -2,7 +2,7 @@ import React from "react";
 import { Appointment } from "../types/Appointment";
 import { getMonthFromNumber } from "../types/MonthGroup";
 
-type AppointmentMiniCardProps = { appointment: Appointment } & React.HTMLProps<HTMLDivElement>;
+type AppointmentMiniCardProps = { appointment: Appointment } & Omit<React.HTMLProps<HTMLDivElement>, "key">;
 
 const timeString = (date: Date): string => {
     const padded = (n: number): string => n.toLocaleString(undefined, { minimumIntegerDigits: 2});
@@ -14,7 +14,7 @@ const AppointmentMiniCard = ({appointment, ...divProps}: AppointmentMiniCardProp
     const { startTime, endTime } = appointment;
     return (
         <div {...divProps}>
-            <span className="font-bold">{getMonthFromNumber(startTime.getMonth())} {startTime.getDay().toLocaleString(undefined, { minimumIntegerDigits: 2 })}: </span>
+            <span className="font-bold">{getMonthFromNumber(startTime.getMonth() + 1)} {(startTime.getDay() + 1).toLocaleString(undefined, { minimumIntegerDigits: 2 })}: </span>
             <span>{timeString(startTime)}-{timeString(endTime)}</span>
         </div>
     )

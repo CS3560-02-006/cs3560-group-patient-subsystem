@@ -1,5 +1,6 @@
 import { Appointment } from "../types/Appointment"
 import { createGroups } from "../utils/months";
+import { Fragment } from "react";
 import AppointmentMonth from "./AppointmentMonth";
 import DayGroup from "./DayGroup";
 
@@ -30,10 +31,10 @@ const AppointmentSelector = ({ appointments, setSelectedAppointment }: Appointme
 
     const groups = createGroups(appointments);
     return (
-        <div>
-            {groups.map(({month, appointments}) => <AppointmentMonth key={month} title={month}>
-                {appointments.map((day, i) => <DayGroup key={`${month}${i}`} day={i + 1} appointments={day} selectHandler={setSelectedAppointment} />)}
-            </AppointmentMonth>)}
+        <div className="">
+            {groups.map(({month, appointments, total}) => total > 0 ? <AppointmentMonth key={`${month} ${total}`} title={month}>
+                {appointments.map((day, i) => day.length > 0 ? <div className="" key={`${month}${i}`}><DayGroup key={`${month}${i}`} day={i + 1} appointments={day} selectHandler={setSelectedAppointment} /></div> : <Fragment key={`${month}${i}`}></Fragment>)}
+            </AppointmentMonth> : <Fragment key={`${month} ${total}`}></Fragment>)}
         </div>
     )
 }

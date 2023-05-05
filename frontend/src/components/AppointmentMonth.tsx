@@ -9,7 +9,7 @@ const AppointmentMonth = ({title, children}: AppointmentMonthProps) => {
     return (
         <div>
             <p>{title} (24-hour clock)</p>
-            <div>
+            <div className="flex flex-wrap gap-4">
                 {children}
             </div>
         </div>

@@ -1,5 +1,5 @@
 import React from "react"
-import { Appointment } from "../types/Appointment"
+import { Appointment } from "../../types/Appointment"
 import AppointmentMiniCard from "./AppointmentMiniCard";
 
 type AvailableAppointmentDayProps = {

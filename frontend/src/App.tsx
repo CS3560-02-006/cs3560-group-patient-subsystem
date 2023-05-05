@@ -1,6 +1,6 @@
 import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { useReducer, useState } from "react";
-import CreateAppointment from "./components/CreateAppointment";
+import CreateAppointment from "./components/Appointment/CreateAppointment";
 import CreatePatient from "./components/CreatePatient/CreatePatient";
 import Home from "./components/Home/Home";
 import Navbar from "./components/NavBar/NavBar";

@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Appointment } from "../types/Appointment";
+import { Appointment } from "../../types/Appointment";
 import AppointmentMiniCard from "./AppointmentMiniCard";
-import numberCompare from "../utils/compare";
+import numberCompare from "../../utils/compare";
 
 type DayGroupProps = {
     day: number,
     appointments: Appointment[],
-    selectHandler: React.Dispatch<React.SetStateAction<Appointment | null>>,
+    selectHandler: (appointment: Appointment | null) => void,
 }
 
 const DayGroup = ({ day, appointments, selectHandler }: DayGroupProps) => {
@@ -20,9 +20,9 @@ const DayGroup = ({ day, appointments, selectHandler }: DayGroupProps) => {
     }
 
     return (
-        <div className="bg-gray-100 hover:bg-blue-300 rounded-lg p-2" onClick={() => toggleVisible(!visible)}>
+        <div className="cursor-pointer bg-gray-100 hover:bg-blue-300 rounded-lg p-2" onClick={() => toggleVisible(!visible)}>
             <div><span className="font-bold">{day}</span>: {appointments.length} available</div>
-            {visible && <div className="w-full flex flex-wrap gap-2">
+            {visible && <div className="cursor-pointer w-full flex flex-wrap gap-2">
                 {
                 appointments.sort((a, b) => {
                     const startcmp = numberCompare(a.startTime.getHours(), b.startTime.getHours());

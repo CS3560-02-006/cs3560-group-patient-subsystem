@@ -1,267 +1,295 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAuthHeaders } from "../../utils/api";
+import React, { useState, useEffect, useContext } from "react";
+import { Doctor } from "../../types/Doctor";
+import { Appointment } from "../../types/Appointment";
+import {
+  ErrorResponse,
+  fetchPatients,
+  submitCreateAppointment,
+} from "../../utils/api";
+import AppointmentSelector from "./AppointmentSelector";
+import AppointmentMiniCard from "./AppointmentMiniCard";
+import { fetchAvailableDoctors } from "../../utils/api";
+import UserContext from "../../authentication/context";
 import { Patient } from "../../types/Patient";
-import "./appointment.css";
-import { UserDetails } from "../../types/UserDetails";
+import PatientCard from "./PatientCard";
+import PatientSelector from "./PatientSelector";
+import { useNavigate } from "react-router";
+//UI functionality for creating a new appointment
 
-interface Doctor {
-  doctorID: number;
-  name: string;
-  phoneNumber: string;
-  emailAddress: string;
-  speciality: string;
-  appointments: Appointment[];
-}
-
-interface Appointment {
-  appointmentID: string;
-  doctorID: string;
-  patientID: number;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: string;
-}
-
-interface Props {
-  userDetails: UserDetails;
-}
-
-const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>("");
-  const [selectedTime, setSelectedTime] = useState<string>("");
-  const [availableAppointments, setAvailableAppointments] = useState<
-    Appointment[]
-  >([]);
+const CreateAppointment = () => {
+  const [doctorList, setDoctorList] = useState<Doctor[]>([]);
+  const [patientList, setPatientList] = useState<Patient[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+  const [activeDoctor, setActiveDoctor] = useState<Doctor | null>(null);
+  const [description, setDescription] = useState<string>("");
+  const [error, setError] = useState<ErrorResponse | null>(null);
+  const [submitOK, setSubmitOK] = useState<boolean>(false);
+  const context = useContext(UserContext);
+  const [isPatientSelectorOpen, setIsPatientSelectorOpen] =
+    useState<boolean>(false);
+  const [userType, setUserType] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Fetch doctors and patients
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      try {
-        const response = await fetch("/api/doctor/", {
-          headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-
-        const responseData = await response.json();
-        setDoctors(responseData);
-      } catch (error) {
-        console.error("Error fetching doctors:", error);
-      }
-    };
-    const fetchPatients = async () => {
-      try {
-        const response = await fetch("/api/patient/", {
-          headers: getAuthHeaders(),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        const responseData = await response.json();
-        setPatients(responseData);
-      } catch (error) {
-        console.error("Error fetching patients:", error);
-      }
-    };
-
-    fetchDoctors();
-    fetchPatients();
-  }, []);
-
-  useEffect(() => {
-    if (userDetails.userType === "patient" && patients.length > 0) {
-      const patientFound = patients.find(
-        (p: Patient) => p.patientID === parseInt(userDetails.patientID)
-      );
-      if (patientFound) {
-        setPatient(patientFound);
-      }
-    }
-  }, [patients]);
-
-  //   const validateDate = (event: React.FocusEvent<HTMLInputElement>) => {
-  //     const appointmentsOnSelectedDate = availableAppointments.filter(
-  //         (appt) => appt.date === selectedDate
-  //       );
-
-  //       if (appointmentsOnSelectedDate.length === 0) {
-  //         setSelectedDate('');
-  //         alert('No available appointments on the selected date. Please choose another date.');
-  //       }
-  //   };
-
-  const handleDoctorChange = async (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const doctorID = parseInt(event.target.value);
-    const doctor = doctors.find((doc: Doctor) => doc.doctorID === doctorID);
-
-    if (doctor) {
-      setSelectedDoctor(doctor);
-      setAvailableAppointments(
-        doctor.appointments.filter(
-          (appt: Appointment) => appt.status === "available"
-        )
-      );
-      setSelectedDate("");
-      setSelectedTime("");
-    } else {
-      setSelectedDoctor(null);
-      setAvailableAppointments([]);
-      setSelectedDate("");
-      setSelectedTime("");
-    }
+  const openPatientSelector = () => {
+    setIsPatientSelectorOpen(true);
   };
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDate(event.target.value);
-    setSelectedTime("");
+  const closePatientSelector = () => {
+    setIsPatientSelectorOpen(false);
   };
 
-  const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTime(event.target.value);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleSubmit = async () => {
-    if (!patient || !selectedDoctor || !selectedDate || !selectedTime) {
-      alert("Please fill in all fields");
+    if (!context?.state.userDetails) {
+      console.error("no context");
       return;
     }
-    const selectedAppointment = availableAppointments.find(
-      (appt: Appointment) =>
-        appt.date === selectedDate && appt.startTime === selectedTime
-    );
+
+    const { userType, patientID } = context?.state.userDetails;
+    if (userType === "clerk" && !selectedPatient) {
+      setError({ error: "Please select a patient." });
+      return;
+    }
+
+    if (!activeDoctor) {
+      setError({ error: "Please select a doctor" });
+      return;
+    }
 
     if (!selectedAppointment) {
-      alert("Selected appointment not found");
+      setError({ error: "Please select an appointment" });
       return;
     }
-    try {
-      const response = await fetch(
-        `/api/appointment/${selectedAppointment.appointmentID}/`,
-        {
-          method: "PATCH",
-          headers: getAuthHeaders(),
-          body: JSON.stringify({
-            patientID: patient.patientID,
-            status: "scheduled",
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error: ${response.status}`);
+    const resp = await submitCreateAppointment(
+      selectedAppointment.appointmentID,
+      {
+        description: description,
+        patientID:
+          userType === "patient"
+            ? parseInt(patientID, 10)
+            : (selectedPatient as Patient).patientID,
+        doctorID: (activeDoctor as Doctor).doctorID,
+        appointmentID: (selectedAppointment as Appointment).appointmentID,
+        status: "scheduled",
       }
+    );
 
-      alert("Appointment created successfully");
+    if (!resp) {
+      setError({ error: "submit failed" });
+    } else {
+      setSubmitOK(true);
       navigate("/");
-    } catch (error) {
-      console.error("Error creating appointment:", error);
-      alert("Error creating appointment");
     }
   };
 
+  const handleSetDoctor = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (!doctorList || doctorList.length === 0) {
+      return;
+    }
+
+    const name = e.target.value;
+
+    if (name === "") {
+      return;
+    }
+
+    const doctor = doctorList?.find((d) => d.name === name);
+
+    if (doctor) {
+      setActiveDoctor(doctor);
+    } else {
+      console.error("unknown doctor:" + name);
+    }
+  };
+
+  // need intervals for dates
+
+  //Resets Date If Doctor is Changed
+  useEffect(() => {
+    setSelectedAppointment(null);
+  }, [activeDoctor]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (submitOK) {
+      interval = setTimeout(() => setSubmitOK(false), 5000);
+    }
+    return () => clearTimeout(interval);
+  }, [submitOK]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (error) {
+      interval = setTimeout(() => setError(null), 5000);
+    }
+    return () => clearTimeout(interval);
+  }, [error]);
+
+  useEffect(() => {
+    const doFetch = async () => {
+      setDoctorList([]);
+      setPatientList([]);
+
+      if (!ignore) {
+        try {
+          const pDoctors = await fetchAvailableDoctors();
+
+          if (context?.state.userDetails.userType === "clerk") {
+            setUserType("clerk");
+            const pPatients = await fetchPatients();
+            setPatientList(pPatients);
+          } else {
+            setUserType("patient");
+          }
+          setDoctorList(pDoctors);
+          setActiveDoctor(pDoctors[0]);
+        } catch (e) {
+          if (e instanceof Error) {
+            setError({ error: e.message });
+          }
+        }
+      }
+    };
+
+    let ignore = false;
+    doFetch();
+    return () => {
+      ignore = true;
+    };
+  }, [context?.state.userDetails.userType]);
+
+  if (error) {
+    return <div>{error.error}</div>;
+  }
+  const selectedDoctorComponent = selectedAppointment ? (
+    <div className="bg-white rounded-lg p-4 mb-4">
+      <p className="mb-2">Selected appointment:</p>
+      <AppointmentMiniCard
+        appointment={selectedAppointment as Appointment}
+        showDay={true}
+      />
+    </div>
+  ) : (
+    <></>
+  );
+
+  const appointmentField = activeDoctor ? (
+    <>
+      <fieldset className="bg-white rounded-lg p-4 mb-4">
+        <label className="block mb-2">Select Appointment:</label>
+        <AppointmentSelector
+          appointments={(activeDoctor as Doctor).appointments.filter(
+            (app) => app.status === "available"
+          )}
+          setSelectedAppointment={setSelectedAppointment}
+        />
+      </fieldset>
+      <fieldset className="bg-white rounded-lg p-4 mb-4">
+        <label className="block mb-2">Description: </label>
+        <textarea
+          value={description}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setDescription(e.target.value)
+          }
+          placeholder="description"
+          className="rounded-md border p-2 w-full resize-none bg-gray-200"
+        ></textarea>
+      </fieldset>
+    </>
+  ) : null;
+
+  // const selectPatientField = (
+  //   <div>
+  //     <div>Select a patient:</div>
+  //     <div className="flex flex-wrap gap-px bg-white rounded-md">
+  //       {patientList.map((patient) => (
+  //         <PatientCard
+  //           key={patient.patientID}
+  //           patient={patient}
+  //           setSelectedPatient={setSelectedPatient}
+  //         />
+  //       ))}
+  //     </div>
+  //   </div>
+  // );
+
+  const selectPatientComponent = selectedPatient ? (
+    <div className="bg-white rounded-lg p-4 mb-4">
+      <p className="mb-2">Selected patient:</p>
+      <PatientCard
+        patient={selectedPatient}
+        setSelectedPatient={setSelectedPatient}
+      />
+    </div>
+  ) : (
+    <></>
+  );
+
   return (
-    <div className="container">
-      <h2>Create Appointment</h2>
-      <div className="formGroup">
-        {userDetails.userType === "clerk" && (
-          <label>
-            Patient:
+    <div className="min-h-screen w-screen flex flex-col items-center bg-gray-100">
+      <div className="w-9/12 flex justify-center py-12">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col w-full gap-2 w-80 items-stretch bg-gray-200 p-4 rounded-lg"
+        >
+          <h2 className="text-2xl font-semibold mb-4">Create Appointment</h2>
+          {/* {patientList.length > 0 && selectPatientField} */}
+          <fieldset className="bg-white rounded-lg p-4 mb-4">
+            <label className="block mb-2">Doctor:</label>
             <select
-              value={patient?.patientID || ""}
-              onChange={(e) =>
-                setPatient(
-                  patients.find(
-                    (p) => p.patientID === parseInt(e.target.value)
-                  ) || null
-                )
-              }
+              value={activeDoctor?.name || ""}
+              onChange={handleSetDoctor}
+              className="rounded-md border bg-gray"
             >
-              <option value="">Select a patient</option>
-              {patients.map((patient) => (
-                <option key={patient.patientID} value={patient.patientID}>
-                  {patient.name}
-                </option>
-              ))}
+              {doctorList?.map((doctor) => (
+                <option key={doctor.doctorID}> {doctor.name} </option>
+              )) || "No doctors available..."}
             </select>
-          </label>
-        )}
-        <label>
-          Doctor:
-          <select
-            value={selectedDoctor?.doctorID || ""}
-            onChange={handleDoctorChange}
-          >
-            <option value="">Select a doctor</option>
-            {doctors.map((doctor) => (
-              <option key={doctor.doctorID} value={doctor.doctorID}>
-                {doctor.name}
-              </option>
-            ))}
-          </select>
-        </label>
+          </fieldset>
+          {activeDoctor && appointmentField}
+          <div className="flex justify-between gap-4">
+            {selectPatientComponent}
+            {selectedDoctorComponent}
+          </div>
+          <div className="flex justify-between">
+            <button
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+              type="submit"
+            >
+              Submit
+            </button>
+            {userType === "clerk" && (
+              <div className="relative">
+                <button
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white"
+                  type="button"
+                  onClick={openPatientSelector}
+                >
+                  Select a patient
+                </button>
+                {isPatientSelectorOpen && (
+                  <PatientSelector
+                    patientList={patientList}
+                    setSelectedPatient={setSelectedPatient}
+                    closePatientSelector={closePatientSelector}
+                  />
+                )}
+              </div>
+            )}
+            <button
+              className="px-4 py-2 rounded-lg bg-red-600 text-white"
+              type="button"
+              onClick={() => {}}
+            >
+              Cancel
+            </button>
+          </div>
+          {submitOK && "Succesfully updated"}
+        </form>
       </div>
-      {selectedDoctor && (
-        <>
-          <label>
-            Date:
-            <select value={selectedDate} onChange={handleDateChange}>
-              <option value="">Select a date</option>
-              {Array.from(
-                new Set(
-                  availableAppointments.map((appointment) => appointment.date)
-                )
-              ).map((date) => {
-                const [year, month, day] = date.split("-");
-                return (
-                  <option key={date} value={date}>
-                    {`${month}-${day}`}
-                  </option>
-                );
-              })}
-            </select>
-          </label>
-          {/* <label>
-            Date:
-            <input
-                type="date"
-                value={selectedDate}
-                onInput={(event: React.ChangeEvent<HTMLInputElement>) => handleDateChange(event)}
-                onBlur={validateDate}
-                min={new Date().toISOString().substr(0, 10)}
-            />
-            </label> */}
-          <label>
-            Time:
-            <select value={selectedTime} onChange={handleTimeChange}>
-              <option value="">Select a time</option>
-              {availableAppointments
-                .filter((appointment) => appointment.date === selectedDate)
-                .map((appointment) => (
-                  <option
-                    key={appointment.startTime}
-                    value={appointment.startTime}
-                  >
-                    {appointment.startTime} - {appointment.endTime}
-                  </option>
-                ))}
-            </select>
-          </label>
-        </>
-      )}
-      <button onClick={handleSubmit}>Create Appointment</button>
-      <button onClick={() => navigate("/")}>Cancel</button>
     </div>
   );
 };

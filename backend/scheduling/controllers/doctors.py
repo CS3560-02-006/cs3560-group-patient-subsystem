@@ -55,6 +55,7 @@ def getDoctors(request, doctor_id=None):
                     'startTime': row['startTime'].strftime('%H:%M:%S'),
                     'endTime': row['endTime'].strftime('%H:%M:%S'),
                     'status': row['status'],
+                    'description': row['description'],
                 }
 
                 doctors[doctorID]['appointments'].append(appointment)

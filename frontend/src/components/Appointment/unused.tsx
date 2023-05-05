@@ -1,10 +1,9 @@
-// Import necessary dependencies
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAuthHeaders } from "../../utils/api";
 import { Patient } from "../../types/Patient";
 import "./appointment.css";
 import { UserDetails } from "../../types/UserDetails";
-import { month_names } from "../../types/MonthGroup";
 
 interface Doctor {
   doctorID: number;
@@ -23,42 +22,26 @@ interface Appointment {
   startTime: string;
   endTime: string;
   status: string;
-  description: string;
 }
 
 interface Props {
   userDetails: UserDetails;
 }
 
-// Define Props interface for UpdateAppointment component
-interface Props {
-  userDetails: UserDetails;
-  currApt: {
-    appointmentID: string;
-    doctorID: string;
-    patientID: number;
-  };
-  onClose: () => void;
-}
-
-// UpdateAppointment component
-const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) => {
-  // Declare state variables
+const CreateAppointment: React.FC<Props> = ({ userDetails }) => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [patient, setPatient] = useState<Patient | null>(null);
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
   const [availableAppointments, setAvailableAppointments] = useState<
     Appointment[]
   >([]);
-  const [firstMount, setFirstMount] = useState(true);
+  const navigate = useNavigate();
 
   // Fetch doctors and patients
   useEffect(() => {
-    // Fetch doctors
     const fetchDoctors = async () => {
       try {
         const response = await fetch("/api/doctor/", {
@@ -75,8 +58,6 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
         console.error("Error fetching doctors:", error);
       }
     };
-
-    // Fetch patients
     const fetchPatients = async () => {
       try {
         const response = await fetch("/api/patient/", {
@@ -93,12 +74,10 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
       }
     };
 
-    // Call fetch functions
     fetchDoctors();
     fetchPatients();
   }, []);
 
-  // Set patient based on userType or currApt.patientID
   useEffect(() => {
     if (userDetails.userType === "patient" && patients.length > 0) {
       const patientFound = patients.find(
@@ -107,60 +86,20 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
       if (patientFound) {
         setPatient(patientFound);
       }
-    } else if (currApt.patientID) {
-      const patientFound = patients.find(
-        (p: Patient) => p.patientID === currApt.patientID
-      );
-      if (patientFound) {
-        setPatient(patientFound);
-      }
     }
   }, [patients]);
 
-  // Set selectedDoctor based on currApt
-  useEffect(() => {
-    if (currApt) {
-      const doctorID = currApt.doctorID;
-      const foundDoctor = doctors.find(
-        (doc: Doctor) => doc.doctorID === parseInt(doctorID, 10)
-      );
-      if (foundDoctor) {
-        setSelectedDoctor(foundDoctor);
-      }
-    }
-  }, [currApt, doctors]);
+  //   const validateDate = (event: React.FocusEvent<HTMLInputElement>) => {
+  //     const appointmentsOnSelectedDate = availableAppointments.filter(
+  //         (appt) => appt.date === selectedDate
+  //       );
 
-  // Set available appointments based on selectedDoctor
-  useEffect(() => {
-    if (selectedDoctor) {
-      setAvailableAppointments(
-        selectedDoctor.appointments.filter(
-          (appt: Appointment) => appt.status === "available"
-        )
-      );
-    } else {
-      setAvailableAppointments([]);
-    }
-  }, [selectedDoctor]);
+  //       if (appointmentsOnSelectedDate.length === 0) {
+  //         setSelectedDate('');
+  //         alert('No available appointments on the selected date. Please choose another date.');
+  //       }
+  //   };
 
-  // Set selectedDate and selectedTime based on currApt and availableAppointments
-  useEffect(() => {
-    if (currApt && selectedDoctor) {
-      const foundAppointment = selectedDoctor.appointments.find(
-        (appt: Appointment) => appt.appointmentID === currApt.appointmentID
-      );
-      if (foundAppointment && firstMount) {
-        setAvailableAppointments((prevState) => [...prevState, foundAppointment])
-        setSelectedDate(foundAppointment.date);
-        setSelectedTime(`${foundAppointment.startTime}-${foundAppointment.endTime}`);
-        setDescription(foundAppointment.description)
-        setFirstMount(false);
-      }
-    }
-
-  }, [selectedDoctor]);
-
-  // Handle doctor selection change
   const handleDoctorChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -184,18 +123,15 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
     }
   };
 
-  // Handle date selection change
   const handleDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedDate(event.target.value);
     setSelectedTime("");
   };
 
-  // Handle time selection change
   const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTime(event.target.value);
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
     if (!patient || !selectedDoctor || !selectedDate || !selectedTime) {
       alert("Please fill in all fields");
@@ -211,23 +147,6 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
       return;
     }
     try {
-      // Free up the existing appointment
-      const resp = await fetch(`/api/appointment/${currApt.appointmentID}/`, {
-        method: "PATCH",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          patientID: null,
-          status: "available",
-          description: "",
-        }),
-      });
-
-      if (!resp.ok) {
-        throw new Error(`HTTP error: ${resp.status}`);
-      }
-      console.log(resp.body)
-
-      // Update the selected appointment
       const response = await fetch(
         `/api/appointment/${selectedAppointment.appointmentID}/`,
         {
@@ -236,29 +155,25 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
           body: JSON.stringify({
             patientID: patient.patientID,
             status: "scheduled",
-            description,
           }),
         }
       );
-      console.log(response.body)
 
       if (!response.ok) {
         throw new Error(`HTTP error: ${response.status}`);
       }
 
-      alert("Appointment updated successfully");
-      onClose();
-      window.location.reload();
+      alert("Appointment created successfully");
+      navigate("/");
     } catch (error) {
       console.error("Error creating appointment:", error);
       alert("Error creating appointment");
     }
   };
 
-  // Render the UpdateAppointment component
   return (
     <div className="container">
-      <h2>Update Appointment</h2>
+      <h2>Create Appointment</h2>
       <div className="formGroup">
         {userDetails.userType === "clerk" && (
           <label>
@@ -311,12 +226,22 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
                 const [year, month, day] = date.split("-");
                 return (
                   <option key={date} value={date}>
-                    {`${month_names[parseInt(month)]} ${day}`}
+                    {`${month}-${day}`}
                   </option>
                 );
               })}
             </select>
           </label>
+          {/* <label>
+            Date:
+            <input
+                type="date"
+                value={selectedDate}
+                onInput={(event: React.ChangeEvent<HTMLInputElement>) => handleDateChange(event)}
+                onBlur={validateDate}
+                min={new Date().toISOString().substr(0, 10)}
+            />
+            </label> */}
           <label>
             Time:
             <select value={selectedTime} onChange={handleTimeChange}>
@@ -335,18 +260,10 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
           </label>
         </>
       )}
-      <label>
-        Description:
-        <input
-          type="text"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </label>
-      <button onClick={handleSubmit}>Update Appointment</button>
-      <button onClick={onClose}>Close</button>
+      <button onClick={handleSubmit}>Create Appointment</button>
+      <button onClick={() => navigate("/")}>Cancel</button>
     </div>
   );
 };
 
-export default UpdateAppointment;
+export default CreateAppointment;

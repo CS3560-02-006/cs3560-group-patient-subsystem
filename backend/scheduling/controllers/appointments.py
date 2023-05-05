@@ -52,6 +52,7 @@ def updateAppointment(request, appointment_id):
     start_time = request.data.get('startTime')
     end_time = request.data.get('endTime')
     status = request.data.get('status')
+    description = request.data.get('description')
 
     # Create a dictionary to store the fields to update
     update_fields = {}
@@ -67,6 +68,10 @@ def updateAppointment(request, appointment_id):
         update_fields['endTime'] = end_time
     if status:
         update_fields['status'] = status
+    if 'description' in request.data:
+        update_fields['description'] = description
+
+    print(request.data)
 
     try:
         # Connect to the database and execute the update query

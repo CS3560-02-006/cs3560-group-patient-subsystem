@@ -63,7 +63,7 @@ function App() {
               <Route path="/" element={<Home userDetails={userDetails} />} />
               <Route
                 path="/createAppointment/"
-                element={<CreateAppointment userDetails={userDetails} />}
+                element={<CreateAppointment />}
               />
               <Route path="/createPatient" element={<CreatePatient />} />
               <Route

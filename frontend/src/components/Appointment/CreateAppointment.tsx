@@ -233,7 +233,7 @@ const CreateAppointment = () => {
           onSubmit={handleSubmit}
           className="flex flex-col w-full gap-2 w-80 items-stretch bg-gray-200 p-4 rounded-lg"
         >
-          <h2 className="text-2xl font-semibold mb-4">Create Appointment</h2>
+          <h2 className="text-2xl font-semibold mb-4">Schedule Appointment</h2>
           {/* {patientList.length > 0 && selectPatientField} */}
           <fieldset className="bg-white rounded-lg p-4 mb-4">
             <label className="block mb-2">Doctor:</label>

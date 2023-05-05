@@ -1,5 +1,3 @@
-
-
 export interface Doctor {
     doctorID: number;
     name: string;
@@ -10,8 +8,8 @@ export interface Doctor {
   }
 
 export interface Appointment {
-    appointmentID: string;
-    doctorID: string;
+    appointmentID: number;
+    doctorID: number;
     patientID: number;
     date: string;
     startTime: string;

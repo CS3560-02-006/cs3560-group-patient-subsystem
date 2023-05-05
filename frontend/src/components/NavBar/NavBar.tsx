@@ -30,7 +30,7 @@ const NavBar: React.FC<Props> = ({ isLoggedIn, onLogout, userDetails }) => {
                 <i className="fa fa-caret-down"></i>
               </button>
               <div className="dropdown-content">
-                <Link to="/createAppointment">Create Appointment</Link>
+                <Link to="/createAppointment">Schedule Appointment</Link>
                 <Link to="">Update / Cancel</Link>
               </div>
             </div>

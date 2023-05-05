@@ -16,8 +16,8 @@ interface Props {
 interface Props {
   userDetails: UserDetails;
   currApt: {
-    appointmentID: string;
-    doctorID: string;
+    appointmentID: number;
+    doctorID: number;
     patientID: number;
   };
   onClose: () => void;
@@ -104,7 +104,7 @@ const UpdateAppointment: React.FC<Props> = ({ userDetails, currApt, onClose }) =
     if (currApt) {
       const doctorID = currApt.doctorID;
       const foundDoctor = doctors.find(
-        (doc: Doctor) => doc.doctorID === parseInt(doctorID, 10)
+        (doc: Doctor) => doc.doctorID === doctorID
       );
       if (foundDoctor) {
         setSelectedDoctor(foundDoctor);

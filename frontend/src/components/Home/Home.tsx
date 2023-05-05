@@ -72,7 +72,7 @@ const Home: React.FC<Props> = ({ userDetails }) => {
   };
 
   // Cancel appointment
-  const handleCancel = async (appointmentID: string) => {
+  const handleCancel = async (appointmentID: number) => {
     if (!window.confirm("Are you sure you want to cancel this appointment?")) {
       return;
     }
